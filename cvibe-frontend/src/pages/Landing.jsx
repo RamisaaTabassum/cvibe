@@ -1,39 +1,14 @@
 import { useState } from "react";
 import LoginModal from "../components/LoginModal";
+import Navbar from "../components/Navbar";
 import RegisterModal from "../components/RegisterModal";
-import { useAuth } from "../context/AuthContext";
 
 export default function Landing() {
-  const { user, logout } = useAuth();
   const [modal, setModal] = useState(null);
 
   return (
     <div className="min-h-screen text-white bg-bg">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 py-4 border-b bg-bg/80 backdrop-blur border-surface2">
-        <span className="text-2xl tracking-widest font-display">
-          CV<span className="text-accent">ibe</span>
-        </span>
-        <div className="flex gap-4">
-          {user ? (
-            <button onClick={logout}
-              className="px-5 py-2 text-sm border rounded-lg text-muted border-surface2 hover:border-accent">
-              Logout
-            </button>
-          ) : (
-            <>
-              <button onClick={() => setModal("login")}
-                className="px-5 py-2 text-sm border rounded-lg text-muted border-surface2 hover:border-accent">
-                Login
-              </button>
-              <button onClick={() => setModal("register")}
-                className="px-5 py-2 text-sm rounded-lg bg-accent hover:bg-accent/80">
-                Get Started
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center min-h-screen px-8 pt-20 text-center">
