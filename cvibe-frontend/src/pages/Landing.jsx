@@ -1,6 +1,5 @@
 import { useState } from "react";
 import LoginModal from "../components/LoginModal";
-import Navbar from "../components/Navbar";
 import RegisterModal from "../components/RegisterModal";
 
 export default function Landing() {
@@ -8,7 +7,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen text-white bg-bg">
-      <Navbar />
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center min-h-screen px-8 pt-20 text-center">
