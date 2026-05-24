@@ -1,54 +1,52 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import LoginModal from "./LoginModal";
-import RegisterModal from "./RegisterModal";
+import { Link } from "react-router-dom";
 
-export default function Navbar() {
-  const { user, logout } = useAuth();
-  const [modal, setModal] = useState(null);
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 py-4 border-b bg-bg/80 backdrop-blur border-surface2">
-        <span className="text-2xl tracking-widest font-display">
-          CV<span className="text-accent">ibe</span>
-        </span>
+    <nav className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
+        
+        <Link to="/" className="text-2xl font-bold text-purple-600">
+          CVibe
+        </Link>
 
-        {/* Navigation Links */}
-        <div className="flex gap-12 text-sm text-muted">
-          <a href="#features" className="hover:text-white">Features</a>
-          <a href="#templates" className="hover:text-white">Templates</a>
-          <a href="#builder" className="hover:text-white">Builder</a>
-          <a href="#how-it-works" className="hover:text-white">How it works</a>
+        <div className="hidden md:flex items-center gap-6">
+          <Link to="/" className="text-gray-600 hover:text-purple-600 transition">
+            Home
+          </Link>
+          <Link to="/templates" className="text-gray-600 hover:text-purple-600 transition">
+            Templates
+          </Link>
+          <Link to="/login" className="text-gray-600 hover:text-purple-600 transition">
+            Login
+          </Link>
+          <Link to="/register" 
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+            Get Started
+          </Link>
         </div>
 
-        <div className="flex gap-4">
-          {user ? (
-            <button onClick={logout}
-              className="px-5 py-2 text-sm border rounded-lg text-muted border-surface2 hover:border-accent">
-              Logout
-            </button>
-          ) : (
-            <>
-              <button onClick={() => setModal("login")}
-                className="px-5 py-2 text-sm border rounded-lg text-muted border-surface2 hover:border-accent">
-                Login
-              </button>
-              <button onClick={() => setModal("register")}
-                className="px-5 py-2 text-sm rounded-lg bg-accent hover:bg-accent/80">
-                Get Started
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
+        <button 
+          className="md:hidden text-gray-600"
+          onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? "✕" : "☰"}
+        </button>
+      </div>
 
-      {modal === "login" && (
-        <LoginModal onClose={() => setModal(null)} onSwitch={() => setModal("register")} />
+      {isOpen && (
+        <div className="md:hidden mt-4 flex flex-col gap-3 px-2">
+          <Link to="/" className="text-gray-600 hover:text-purple-600">Home</Link>
+          <Link to="/templates" className="text-gray-600 hover:text-purple-600">Templates</Link>
+          <Link to="/login" className="text-gray-600 hover:text-purple-600">Login</Link>
+          <Link to="/register" className="bg-purple-600 text-white px-4 py-2 rounded-lg text-center">
+            Get Started
+          </Link>
+        </div>
       )}
-      {modal === "register" && (
-        <RegisterModal onClose={() => setModal(null)} onSwitch={() => setModal("login")} />
-      )}
-    </>
+    </nav>
   );
-}
+};
+
+export default Navbar;
