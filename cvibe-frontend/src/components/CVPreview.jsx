@@ -1,5 +1,5 @@
-import PurpleTemplate from '../templates/PurpleTemplate';
 import DarkTemplate from '../templates/DarkTemplate';
+import PurpleTemplate from '../templates/PurpleTemplate';
 
 const CVPreview = ({ data, template = 'purple' }) => {
   const templates = {
@@ -10,7 +10,7 @@ const CVPreview = ({ data, template = 'purple' }) => {
   const SelectedTemplate = templates[template] || PurpleTemplate;
 
   return (
-    <div className="w-full shadow-lg rounded-lg overflow-hidden border border-gray-200">
+    <div className="w-full overflow-hidden border border-gray-200 rounded-lg shadow-lg">
       <SelectedTemplate data={data} />
     </div>
   );
