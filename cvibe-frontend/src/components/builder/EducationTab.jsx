@@ -6,9 +6,7 @@ const EducationTab = ({ data, onChange }) => {
   };
 
   const updateEdu = (index, field, value) => {
-    const updated = educations.map((edu, i) =>
-      i === index ? { ...edu, [field]: value } : edu
-    );
+    const updated = educations.map((edu, i) => i === index ? { ...edu, [field]: value } : edu);
     onChange({ ...data, education: updated });
   };
 
@@ -20,10 +18,7 @@ const EducationTab = ({ data, onChange }) => {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-gray-700">Education</h3>
-        <button onClick={addEdu}
-          className="px-3 py-1 text-sm text-white transition bg-purple-600 rounded-lg hover:bg-purple-700">
-          + Add
-        </button>
+        <button onClick={addEdu} className="px-3 py-1 text-sm text-white transition bg-purple-600 rounded-lg hover:bg-purple-700">+ Add</button>
       </div>
       {educations.map((edu, i) => (
         <div key={i} className="flex flex-col gap-3 p-4 border border-gray-200 rounded-lg">
@@ -31,7 +26,7 @@ const EducationTab = ({ data, onChange }) => {
             <span className="text-sm font-medium text-gray-500">Education {i + 1}</span>
             <button onClick={() => removeEdu(i)} className="text-xs text-red-500 hover:underline">Remove</button>
           </div>
-          {['degree','institution','year'].map((field) => (
+          {['degree', 'institution', 'year'].map((field) => (
             <input key={field} type="text"
               value={edu[field] || ''}
               onChange={(e) => updateEdu(i, field, e.target.value)}
@@ -42,7 +37,7 @@ const EducationTab = ({ data, onChange }) => {
         </div>
       ))}
       {educations.length === 0 && (
-      <p className="py-4 text-sm text-center text-gray-400">Click + Add to add education</p>
+        <p className="py-4 text-sm text-center text-gray-400">Click + Add to add education</p>
       )}
     </div>
   );
