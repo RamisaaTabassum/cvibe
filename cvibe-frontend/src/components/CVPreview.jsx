@@ -1,10 +1,12 @@
 import PurpleTemplate from '../templates/PurpleTemplate';
 import DarkTemplate from '../templates/DarkTemplate';
+import RedTemplate from '../templates/RedTemplate';
 
 const CVPreview = ({ data, template = 'purple' }) => {
   const templates = {
     purple: PurpleTemplate,
     dark: DarkTemplate,
+    red: RedTemplate,
   };
 
   const SelectedTemplate = templates[template] || PurpleTemplate;

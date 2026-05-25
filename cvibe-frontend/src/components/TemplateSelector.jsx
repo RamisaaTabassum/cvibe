@@ -1,11 +1,12 @@
 const templates = [
   { id: 'purple', name: 'Purple', color: 'bg-purple-600' },
   { id: 'dark', name: 'Dark', color: 'bg-gray-900' },
+  { id: 'red', name: 'Red', color: 'bg-red-600' },
 ];
 
 const TemplateSelector = ({ selected, onSelect }) => {
   return (
-    <div className="flex gap-3 p-4 bg-gray-50 rounded-lg">
+    <div className="flex gap-3 p-4 bg-gray-50 rounded-lg flex-wrap">
       <p className="text-sm font-medium text-gray-600 self-center mr-2">
         Template:
       </p>
