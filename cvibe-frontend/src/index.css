@@ -4,25 +4,77 @@
 
 @layer base {
   :root {
-    --color-primary: #7F77DD;
-    --color-primary-dark: #534AB7;
-    --color-secondary: #1D9E75;
-    --color-accent: #D85A30;
-    --color-bg: #ffffff;
-    --color-bg-secondary: #F8F8FF;
-    --color-text: #2C2C2A;
-    --color-text-muted: #5F5E5A;
-    --color-border: #D3D1C7;
-    --font-main: 'Inter', sans-serif;
-    --radius: 8px;
-    --radius-lg: 12px;
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a38;
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cfcb8;
+    --text: #f0f0f8;
+    --muted: #7070a0;
+    --white: #ffffff;
   }
 
   .dark {
-    --color-bg: #1a1a2e;
-    --color-bg-secondary: #16213e;
-    --color-text: #f1efff;
-    --color-text-muted: #AFA9EC;
-    --color-border: #3C3489;
+    --color-bg: #0a0a0f;
+    --color-bg-secondary: #111118;
+
+    --color-text: #f0f0f8;
+    --color-text-muted: #a5a5d6;
+
+    --color-border: #1f1f2a;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 100px 24px 60px;
   }
 }

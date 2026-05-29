@@ -1,14 +1,15 @@
 const DarkTemplate = ({ data }) => {
-  const { name, title, email, phone, location, summary,
-          experience, education, skills } = data;
+  // 🛡️ সেফটি এবং তোমার personalInfo অবজেক্টের সাথে ম্যাপিং
+  const { personalInfo, experience, education, skills } = data || {};
+  const { name, title, email, phone, location, summary } = personalInfo || {};
 
   return (
     <div className="bg-gray-900 text-white w-full min-h-[297mm] p-8 font-sans">
 
-      <div className="border-l-4 border-purple-400 pl-4 mb-6">
+      <div className="pl-4 mb-6 border-l-4 border-purple-400">
         <h1 className="text-3xl font-bold text-white">{name || 'Your Name'}</h1>
-        <p className="text-purple-400 text-lg mt-1">{title || 'Your Title'}</p>
-        <div className="flex gap-4 mt-2 text-sm text-gray-400 flex-wrap">
+        <p className="mt-1 text-lg text-purple-400">{title || 'Your Title'}</p>
+        <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-400">
           {email && <span>✉ {email}</span>}
           {phone && <span>✆ {phone}</span>}
           {location && <span>⌖ {location}</span>}
@@ -17,29 +18,29 @@ const DarkTemplate = ({ data }) => {
 
       {summary && (
         <div className="mb-5">
-          <h2 className="text-purple-400 font-bold text-lg mb-2 uppercase tracking-wider text-sm">
+          <h2 className="mb-2 text-sm font-bold tracking-wider text-purple-400 uppercase">
             Summary
           </h2>
-          <p className="text-gray-300 text-sm leading-relaxed">{summary}</p>
+          <p className="text-sm leading-relaxed text-gray-300">{summary}</p>
         </div>
       )}
 
       {experience?.length > 0 && (
         <div className="mb-5">
-          <h2 className="text-purple-400 font-bold uppercase tracking-wider text-sm mb-3">
+          <h2 className="mb-3 text-sm font-bold tracking-wider text-purple-400 uppercase">
             Experience
           </h2>
           {experience.map((exp, i) => (
-            <div key={i} className="mb-3 pl-3 border-l border-gray-700">
+            <div key={i} className="pl-3 mb-3 border-l border-gray-700">
               <div className="flex justify-between">
                 <div>
                   <p className="font-semibold text-white">{exp.position}</p>
-                  <p className="text-purple-400 text-sm">{exp.company}</p>
+                  <p className="text-sm text-purple-400">{exp.company}</p>
                 </div>
-                <p className="text-gray-500 text-sm">{exp.duration}</p>
+                <p className="text-sm text-gray-500">{exp.duration}</p>
               </div>
               {exp.description && (
-                <p className="text-gray-400 text-sm mt-1">{exp.description}</p>
+                <p className="mt-1 text-sm text-gray-400">{exp.description}</p>
               )}
             </div>
           ))}
@@ -48,12 +49,12 @@ const DarkTemplate = ({ data }) => {
 
       {skills?.length > 0 && (
         <div>
-          <h2 className="text-purple-400 font-bold uppercase tracking-wider text-sm mb-3">
+          <h2 className="mb-3 text-sm font-bold tracking-wider text-purple-400 uppercase">
             Skills
           </h2>
           <div className="flex flex-wrap gap-2">
             {skills.map((skill, i) => (
-              <span key={i} className="border border-purple-400 text-purple-300 px-3 py-1 rounded text-sm">
+              <span key={i} className="px-3 py-1 text-sm text-purple-300 border border-purple-400 rounded">
                 {skill}
               </span>
             ))}
