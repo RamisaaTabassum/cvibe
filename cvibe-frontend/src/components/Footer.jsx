@@ -1,34 +1,34 @@
 const Footer = () => {
   return (
-    <footer className="bg-[#0a0a0f] border-t border-[#1f1f2a] text-[#a5a5d6] font-sans">
-      {/* Inner grid bounds matching Hero/Navbar exactly */}
-      <div className="w-full max-w-6xl px-6 py-8 mx-auto md:px-12">
+    <footer className="bg-[#0a0a0f] border-t border-[#2a2a38] text-[#a5a5d6] font-sans">
+      {/* Grid Bounds */}
+      <div className="w-full max-w-[1600px] px-8 py-10 mx-auto md:px-16">
         <div className="flex flex-col items-center justify-between w-full gap-8 md:flex-row">
           
-          {/* LEFT - BRAND (Takes 1/3 width on desktop to maintain center balance) */}
+          {/* LEFT - BRAND */}
           <div className="text-center md:text-left md:flex-1">
-            <div className="font-['Bebas_Neue',sans-serif] text-[24px] tracking-[2px] text-[#f0f0f8]">
+            <div className="font-['Bebas_Neue',sans-serif] text-[28px] tracking-[2px] text-[#f0f0f8]">
               CV<span className="text-[#7c5cfc]">ibe</span>
             </div>
-            <p className="text-xs text-[#5f5e5a] mt-1 font-normal">
+            <p className="text-sm text-[#7070a0] mt-1 font-normal">
               Build professional resumes with AI
             </p>
           </div>
           
-          {/* MIDDLE - LINKS (Perfectly centered, aligning with Navbar & Hero text) */}
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-[#7070a0] font-medium flex-none">
+          {/* MIDDLE - LINKS */}
+          <div className="flex flex-wrap justify-center gap-8 text-base text-[#7070a0] font-medium flex-none">
             <a className="hover:text-[#f0f0f8] transition cursor-pointer">About</a>
             <a className="hover:text-[#f0f0f8] transition cursor-pointer">Privacy</a>
             <a className="hover:text-[#f0f0f8] transition cursor-pointer">Contact</a>
             <a className="hover:text-[#f0f0f8] transition cursor-pointer">Support</a>
           </div>
           
-          {/* RIGHT - SOCIAL (Takes 1/3 width on desktop and aligns items to the right) */}
+          {/* RIGHT - SOCIAL */}
           <div className="flex gap-3 text-[#7070a0] md:flex-1 justify-center md:justify-end w-full md:w-auto">
             {["f", "in", "x"].map((social) => (
               <a 
                 key={social}
-                className="w-9 h-9 flex items-center justify-center rounded-md bg-[#111118] border border-[#1f1f2a] hover:border-[#7c5cfc] hover:text-white transition text-xs cursor-pointer"
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#111118] border border-[#2a2a38] hover:border-[#7c5cfc] hover:text-white transition text-sm font-medium cursor-pointer"
               >
                 {social}
               </a>
@@ -37,7 +37,7 @@ const Footer = () => {
         </div>
         
         {/* BOTTOM */}
-        <div className="mt-6 pt-4 border-t border-[#1f1f2a] text-center text-xs text-[#5f5e5a] font-normal">
+        <div className="mt-8 pt-6 border-t border-[#2a2a38] text-center text-sm text-[#7070a0] font-normal">
           © 2026 CVibe. All rights reserved.
         </div>
       </div>
