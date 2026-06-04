@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Outlet, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
@@ -12,56 +12,82 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
+
+const PublicLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <div className="flex flex-col flex-grow pt-20">
+        <Outlet />
+      </div>
+    </>
+  );
+};
+
+
+const AppContentLayout = () => {
+  return (
+    <div className="flex flex-col flex-grow">
+      <Outlet />
+    </div>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-
-        {/* NAVBAR (fixed) */}
-        <Navbar />
-
-        {/* MAIN WRAPPER */}
-        <div className="pt-20 min-h-screen flex flex-col bg-[#0a0a0f] text-[#f0f0f8]">
-
+        
+       
+        <div className="min-h-screen flex flex-col bg-[#0a0a0f] text-[#f0f0f8]">
+          
           <Routes>
+            
+            {/* 1. ROUTES WITH GLOBAL NAVBAR & FOOTER */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Landing />} />
+            </Route>
 
-            {/* PUBLIC */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* 2. ROUTES WITH NO GLOBAL NAVBAR (BUT CONTAINS GLOBAL FOOTER) */}
+            <Route element={<AppContentLayout />}>
+              
+              {/* AUTH */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* PROTECTED */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* DASHBOARD */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* BUILDER */}
-            <Route
-              path="/builder"
-              element={
-                <ProtectedRoute>
-                  <CVBuilder />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/builder/:id"
-              element={
-                <ProtectedRoute>
-                  <CVBuilder />
-                </ProtectedRoute>
-              }
-            />
+              {/* BUILDER WORKSPACE */}
+              <Route
+                path="/builder"
+                element={
+                  <ProtectedRoute>
+                    <CVBuilder />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/builder/:id"
+                element={
+                  <ProtectedRoute>
+                    <CVBuilder />
+                  </ProtectedRoute>
+                }
+              />
+              
+            </Route>
 
           </Routes>
 
-          {/* FOOTER */}
+          
           <Footer />
 
         </div>

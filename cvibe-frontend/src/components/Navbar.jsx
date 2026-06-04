@@ -1,58 +1,78 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ user, handleLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // CSS Spring/Bounce Transition & Hover Effect Match
+  const baseBtnClass = "py-[10px] px-[22px] rounded-[8px] font-['DM_Sans',sans-serif] text-[14px] font-medium cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/80 backdrop-blur-md border-b border-[#2a2a38]">
-      {/* 
-        Wider layout (max-w-[1600px]) to match modern desktops beautifully.
-        Increased horizontal padding (px-8 md:px-16) to remove excessive margins.
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0f]/85 backdrop-blur-[16px] border-b border-[#2a2a38] py-[18px] px-6 sm:px-12 md:px-16 lg:px-24">
+      {/* ডিজাইন পরিবর্তন না করে ল্যাপটপ এবং বড় স্ক্রিনের সাথে সামঞ্জস্য রেখে 
+        সাইড মার্জিন ফুটিয়ে তুলতে আউটার কন্টেইনারে রেসপনসিভ প্যাডিং বাড়ানো হয়েছে।
       */}
-      <div className="flex items-center w-full max-w-[1600px] px-8 py-5 mx-auto md:px-16">
+      <div className="w-full max-w-[1600px] mx-auto flex items-center">
         
-        {/* LEFT - Logo Container */}
+        {/* LEFT - Logo (.nav-logo) */}
         <div className="flex justify-start flex-1">
-          <Link to="/" className="text-[#f0f0f8]">
-            {/* Increased text size to 28px for better desktop visibility */}
-            <div className="font-['Bebas_Neue',sans-serif] text-[28px] tracking-[2px]">
+          <Link to="/" className="text-[#f0f0f8] no-underline">
+            <div className="font-['Bebas_Neue',sans-serif] text-[28px] tracking-[2px] cursor-pointer leading-none">
               CV<span className="text-[#7c5cfc]">ibe</span>
             </div>
           </Link>
         </div>
         
-        {/* MIDDLE - Links */}
-        {/* Switched from text-sm to text-base (16px) to make text readable and proportional */}
-        <ul className="hidden md:flex items-center gap-10 text-base text-[#7070a0] font-sans font-medium justify-center flex-none">
-          <li><a href="#features-section" className="transition hover:text-white">Features</a></li>
-          <li><a href="#templates-section" className="transition hover:text-white">Templates</a></li>
-          <li><a href="#how-section" className="transition hover:text-white">How it works</a></li>
+        {/* MIDDLE - Links (Perfectly Centered) */}
+        <ul className="items-center justify-center flex-none hidden gap-8 p-0 m-0 list-none md:flex">
+          <li>
+            <a href="#features-section" className="text-[14px] font-medium text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8] block leading-none">
+              Features
+            </a>
+          </li>
+          <li>
+            <a href="#templates-section" className="text-[14px] font-medium text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8] block leading-none">
+              Templates
+            </a>
+          </li>
+          <li>
+            <a href="#how-section" className="text-[14px] font-medium text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8] block leading-none">
+              How it works
+            </a>
+          </li>
         </ul>
         
-        {/* RIGHT - Auth Container */}
-        <div className="flex items-center justify-end flex-1 gap-4 font-sans">
+        {/* RIGHT - Auth Actions */}
+        <div className="flex-1 flex justify-end items-center gap-[10px]">
           
-          {/* Desktop Auth Buttons (Upgraded to text-base and better padding) */}
-          <div className="items-center hidden gap-4 md:flex">
+          <div className="items-center hidden gap-[10px] md:flex">
             {user ? (
               <>
-                <Link to="/dashboard" className="text-base text-[#7070a0] hover:text-white transition">
+                <Link to="/dashboard" className="text-[14px] font-medium text-[#7070a0] hover:text-[#f0f0f8] no-underline transition-colors duration-200 mr-2">
                   Dashboard
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="px-5 py-2 text-base border border-[#2a2a38] rounded-xl text-[#7070a0] hover:text-white transition cursor-pointer"
+                  className={`${baseBtnClass} bg-transparent text-[#7070a0] border border-[#2a2a38] hover:border-[#7c5cfc] hover:text-white`}
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="px-5 py-2 text-base text-[#7070a0] hover:text-white transition">
+                {/* Log In */}
+                <Link 
+                  to="/login" 
+                  className={`${baseBtnClass} bg-transparent text-[#7070a0] border border-[#2a2a38] hover:border-[#7c5cfc] hover:text-white text-center no-underline`}
+                >
                   Log in
                 </Link>
-                <Link to="/register" className="px-5 py-2.5 text-base bg-[#7c5cfc] text-white rounded-xl font-medium hover:bg-[#6a4ae8] transition---">
+                
+                {/* Sign Up */}
+                <Link 
+                  to="/register" 
+                  className={`${baseBtnClass} bg-[#7c5cfc] text-white hover:bg-[#6a4ae8] text-center no-underline shadow-lg shadow-[#7c5cfc]/10 hover:shadow-[#7c5cfc]/25`}
+                >
                   Sign up free
                 </Link>
               </>
@@ -62,7 +82,7 @@ const Navbar = ({ user, handleLogout }) => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-[#7070a0] hover:text-white focus:outline-none cursor-pointer p-1"
+            className="md:hidden text-[#7070a0] hover:text-white focus:outline-none cursor-pointer p-1 line-none"
             aria-label="Toggle Menu"
           >
             {isOpen ? (
@@ -81,60 +101,23 @@ const Navbar = ({ user, handleLogout }) => {
 
       {/* MOBILE DROPDOWN MENU */}
       {isOpen && (
-        <div className="md:hidden bg-[#0a0a0f]/95 border-b border-[#2a2a38] px-8 py-6 flex flex-col gap-6 backdrop-blur-lg">
-          <ul className="flex flex-col gap-5 text-lg text-[#7070a0] font-medium">
-            <li>
-              <a href="#features-section" onClick={() => setIsOpen(false)} className="block py-1 transition hover:text-white">
-                Features
-              </a>
-            </li>
-            <li>
-              <a href="#templates-section" onClick={() => setIsOpen(false)} className="block py-1 transition hover:text-white">
-                Templates
-              </a>
-            </li>
-            <li>
-              <a href="#how-section" onClick={() => setIsOpen(false)} className="block py-1 transition hover:text-white">
-                How it works
-              </a>
-            </li>
+        <div className="md:hidden bg-[#0a0a0f]/95 border-b border-[#2a2a38] px-6 py-6 flex flex-col gap-6 backdrop-blur-lg mt-[18px]">
+          <ul className="flex flex-col gap-5 text-lg text-[#7070a0] font-medium list-none p-0 m-0">
+            <li><a href="#features-section" onClick={() => setIsOpen(false)} className="block py-1 no-underline hover:text-white">Features</a></li>
+            <li><a href="#templates-section" onClick={() => setIsOpen(false)} className="block py-1 no-underline hover:text-white">Templates</a></li>
+            <li><a href="#how-section" onClick={() => setIsOpen(false)} className="block py-1 no-underline hover:text-white">How it works</a></li>
           </ul>
-          
           <div className="h-[1px] bg-[#2a2a38] w-full" />
-
           <div className="flex flex-col gap-3">
             {user ? (
               <>
-                <Link 
-                  to="/dashboard" 
-                  onClick={() => setIsOpen(false)} 
-                  className="w-full text-center text-base text-[#7070a0] hover:text-white transition py-2"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={() => { handleLogout(); setIsOpen(false); }}
-                  className="w-full text-center px-5 py-3 text-base border border-[#2a2a38] rounded-xl text-[#7070a0] hover:text-white transition cursor-pointer"
-                >
-                  Logout
-                </button>
+                <Link to="/dashboard" onClick={() => setIsOpen(false)} className="w-full text-center text-base text-[#7070a0] hover:text-white no-underline py-2">Dashboard</Link>
+                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="w-full py-2.5 text-base border border-[#2a2a38] rounded-[8px] text-[#7070a0] hover:text-white">Logout</button>
               </>
             ) : (
               <>
-                <Link 
-                  to="/login" 
-                  onClick={() => setIsOpen(false)} 
-                  className="w-full text-center px-5 py-3 text-base border border-[#2a2a38] rounded-xl text-[#7070a0] hover:text-white transition"
-                >
-                  Log in
-                </Link>
-                <Link 
-                  to="/register" 
-                  onClick={() => setIsOpen(false)} 
-                  className="w-full text-center px-5 py-3 text-base bg-[#7c5cfc] text-white rounded-xl font-medium hover:bg-[#6a4ae8] transition"
-                >
-                  Sign up free
-                </Link>
+                <Link to="/login" onClick={() => setIsOpen(false)} className="w-full text-center py-2.5 text-base border border-[#2a2a38] rounded-[8px] text-[#7070a0] hover:text-white no-underline">Log in</Link>
+                <Link to="/register" onClick={() => setIsOpen(false)} className="w-full text-center py-2.5 text-base bg-[#7c5cfc] text-white rounded-[8px] font-medium no-underline">Sign up free</Link>
               </>
             )}
           </div>
