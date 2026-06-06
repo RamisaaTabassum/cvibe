@@ -1,68 +1,104 @@
+
 const EducationTab = ({ data, onChange }) => {
-  const educations = data?.education || [];
+  // Safe state mutation for array-nested flat object inputs
+  const handleChange = (field, value) => {
+    const updatedEducation = [...(data?.education || [])];
+    
+    // Ensure the first entry object exists before updating fields
+    if (!updatedEducation[0]) {
+      updatedEducation[0] = {
+        degree: '',
+        institution: '',
+        startYear: '',
+        endYear: '',
+        cgpa: ''
+      };
+    }
+    
+    updatedEducation[0][field] = value;
 
-  const addEdu = () => {
-    onChange({ ...data, education: [...educations, { institution: '', degree: '', year: '' }] });
+    onChange({
+      ...data,
+      education: updatedEducation
+    });
   };
 
-  const updateEdu = (index, field, value) => {
-    const updated = educations.map((edu, i) =>
-      i === index ? { ...edu, [field]: value } : edu
-    );
-    onChange({ ...data, education: updated });
-  };
-
-  const removeEdu = (index) => {
-    onChange({ ...data, education: educations.filter((_, i) => i !== index) });
-  };
+  // Extract the active work item safely for cleaner value rendering
+  const currentEdu = data?.education?.[0] || {};
 
   return (
-    <div className="flex flex-col gap-4 text-[#f0f0f8]">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-200">Education</h3>
-        <button
-          onClick={addEdu}
-          className="px-3 py-1 text-sm text-white transition bg-[#7c5cfc] rounded-lg hover:bg-[#6a4ae8] cursor-pointer"
-        >
-          + Add
-        </button>
+    <div className="space-y-4 w-full text-[#f0f0f8]">
+      
+      {/* 1. Degree (Full Width) */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
+          Degree
+        </label>
+        <input
+          type="text"
+          value={currentEdu.degree || ''}
+          onChange={(e) => handleChange('degree', e.target.value)}
+          placeholder="e.g. BSc in Computer Science and Engineering"
+          className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
+        />
       </div>
 
-      {educations.map((edu, i) => (
-        <div
-          key={i}
-          className="flex flex-col gap-3 p-4 border border-gray-700 bg-[#111118] rounded-lg"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-400">
-              Education {i + 1}
-            </span>
-            <button
-              onClick={() => removeEdu(i)}
-              className="text-xs text-red-400 cursor-pointer hover:underline"
-            >
-              Remove
-            </button>
-          </div>
+      {/* 2. Institution (Full Width) */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
+          Institution
+        </label>
+        <input
+          type="text"
+          value={currentEdu.institution || ''}
+          onChange={(e) => handleChange('institution', e.target.value)}
+          placeholder="International Islamic University Chittagong"
+          className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
+        />
+      </div>
 
-          {['degree', 'institution', 'year'].map((field) => (
-            <input
-              key={field}
-              type="text"
-              value={edu[field] || ''}
-              onChange={(e) => updateEdu(i, field, e.target.value)}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              className="w-full px-3 py-2 text-sm bg-[#0a0a0f] border border-gray-700 text-white rounded-lg focus:outline-none focus:border-[#7c5cfc]"
-            />
-          ))}
+      {/* 3. Side-by-Side Grid Row: Start Year & End Year */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
+            Start Year
+          </label>
+          <input
+            type="text"
+            value={currentEdu.startYear || ''}
+            onChange={(e) => handleChange('startYear', e.target.value)}
+            placeholder="2020"
+            className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
+          />
         </div>
-      ))}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
+            End Year
+          </label>
+          <input
+            type="text"
+            value={currentEdu.endYear || ''}
+            onChange={(e) => handleChange('endYear', e.target.value)}
+            placeholder="2024 / Present"
+            className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
+          />
+        </div>
+      </div>
 
-      {educations.length === 0 && (
-        <p className="py-4 text-sm text-center text-gray-500">
-          Click + Add to add education
-        </p>
-      )}
+      {/* 4. CGPA (Full Width) */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
+          CGPA
+        </label>
+        <input
+          type="text"
+          value={currentEdu.cgpa || ''}
+          onChange={(e) => handleChange('cgpa', e.target.value)}
+          placeholder="3.72 / 4.00"
+          className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
+        />
+      </div>
+
     </div>
   );
 };
