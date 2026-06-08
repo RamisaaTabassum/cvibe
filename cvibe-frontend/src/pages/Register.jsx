@@ -1,96 +1,123 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
+
     try {
       await register(name, email, password);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.message || "Registration failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-50">
-      <div className="w-full max-w-md p-8 bg-white border border-gray-200 shadow-sm rounded-xl">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] px-4">
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-800">Create account</h1>
-        <p className="mb-6 text-sm text-gray-500">Join CVibe for free</p>
+      <div className="w-full max-w-md bg-[#111118] border border-[#2a2a38] rounded-2xl p-10">
 
-        {error && (
-          <div className="px-4 py-3 mb-4 text-sm text-red-600 rounded-lg bg-red-50">
-            {error}
-          </div>
-        )}
+        {/* Logo */}
+        <div className="text-2xl font-bold tracking-widest mb-1 font-[Bebas_Neue] text-[#f0f0f8]">
+          CV<span className="text-[#7c5cfc]">ibe</span>
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* Title */}
+        <div className="text-xl font-semibold text-[#f0f0f8] mb-2">
+          Create account
+        </div>
+
+        <p className="text-sm text-[#7070a0] mb-6 leading-relaxed">
+          Start building your professional CV for free.
+        </p>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Name */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Name</label>
+            <label className="block text-xs font-semibold text-[#7070a0] mb-2">
+              Full Name
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
               required
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+              placeholder="Your name"
+              className="w-full px-4 py-3 rounded-lg bg-[#1a1a24] border border-[#2a2a38] text-[#f0f0f8] outline-none focus:border-[#7c5cfc]"
             />
           </div>
 
+          {/* Email */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-xs font-semibold text-[#7070a0] mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
               required
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+              placeholder="your@email.com"
+              className="w-full px-4 py-3 rounded-lg bg-[#1a1a24] border border-[#2a2a38] text-[#f0f0f8] outline-none focus:border-[#7c5cfc]"
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-xs font-semibold text-[#7070a0] mb-2">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="minimum 6 characters"
               required
               minLength={6}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+              placeholder="••••••••"
+              className="w-full px-4 py-3 rounded-lg bg-[#1a1a24] border border-[#2a2a38] text-[#f0f0f8] outline-none focus:border-[#7c5cfc]"
             />
           </div>
 
+          {/* Error */}
+          {error && (
+            <p className="text-xs text-[#fc5c7d]">{error}</p>
+          )}
+
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="py-2 font-medium text-white transition bg-purple-600 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+            className="w-full py-3 rounded-lg bg-[#7c5cfc] text-white font-medium hover:opacity-90 disabled:opacity-60"
           >
-            {loading ? 'Creating account...' : 'Register'}
+            {loading ? "Creating account..." : "Create account →"}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-500">
-          Already have an account?{' '}
-          <Link to="/login" className="text-purple-600 hover:underline">
+        {/* Footer */}
+        <p className="text-center text-sm text-[#7070a0] mt-6">
+          Already have an account?{" "}
+          <Link to="/login" className="text-[#7c5cfc]">
             Login
           </Link>
         </p>
+
       </div>
     </div>
   );
