@@ -1,59 +1,54 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenAI, Type } = require('@google/genai');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const extractKeywords = async (req, res) => {
   try {
     const { jobDescription } = req.body;
-
     if (!jobDescription) {
       return res.status(400).json({ message: 'Job description is required' });
     }
 
-    const prompt = `
-      Extract the most important keywords from this job description for a CV/resume.
-      Return ONLY a JSON array of strings, no explanation.
-      Example: ["React", "Node.js", "MongoDB", "REST API"]
-      
-      Job Description: ${jobDescription}
-    `;
+    // GoogleGenAI SDK-er dynamic structure configuration matching responseSchema runtime setup
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash', // Model production pipeline verification check parameters update (Use standard model strings)
+      contents: `Extract the most important technical and soft keywords from this job description for a CV/resume. Job Description: ${jobDescription}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.STRING
+          },
+          description: "List of extracted skills and keywords."
+        }
+      }
+    });
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    
-    const cleaned = text.replace(/```json|```/g, '').trim();
-    const keywords = JSON.parse(cleaned);
+    // config data auto parsing format runtime structure handle kore dynamically mapping
+    const keywords = JSON.parse(response.text);
+    return res.json({ success: true, keywords });
 
-    res.json({ success: true, keywords });
   } catch (error) {
-    res.status(500).json({ message: 'AI error: ' + error.message });
+    return res.status(500).json({ message: 'AI error: ' + error.message });
   }
 };
 
-// CV text grammar fix করো
 const fixGrammar = async (req, res) => {
   try {
     const { text } = req.body;
-
     if (!text) {
-      return res.status(400).json({ message: 'Enter text to improve' });
+      return res.status(400).json({ message: 'Text content is required' });
     }
 
-    const prompt = `
-      Fix the grammar and improve the professional tone of this CV text.
-      Return ONLY the improved text, no explanation or extra formatting.
-      
-      Text: ${text}
-    `;
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: `Fix the grammar and improve the professional tone of this CV/resume text. Return ONLY the improved text, with no introduction, no markdown, and no explanation. Text: ${text}`,
+    });
 
-    const result = await model.generateContent(prompt);
-    const improved = result.response.text().trim();
-
-    res.json({ success: true, improved });
+    return res.json({ success: true, improved: response.text.trim() });
   } catch (error) {
-    res.status(500).json({ message: 'AI error: ' + error.message });
+    return res.status(500).json({ message: 'AI error: ' + error.message });
   }
 };
 

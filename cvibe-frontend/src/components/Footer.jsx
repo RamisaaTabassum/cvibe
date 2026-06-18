@@ -1,26 +1,43 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 py-8 mt-auto">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          
-          <div>
-            <span className="text-xl font-bold text-purple-600">CVibe</span>
-            <p className="text-sm text-gray-500 mt-1">
-              Build your perfect CV with AI
-            </p>
+    <footer className="bg-[#0a0a0f] border-t border-[#2a2a38] pt-[60px] pb-[40px] px-6 md:px-[48px] flex flex-col items-center gap-5 text-center font-sans">
+      <div className="w-full max-w-[1600px] mx-auto flex flex-col items-center gap-5">
+        
+        {/* TOP - Logo (.footer-logo) */}
+        <Link to="/" className="inline-block no-underline transition-transform duration-200 hover:scale-105">
+          <div className="font-['Bebas_Neue',sans-serif] text-[32px] tracking-[3px] text-[#f0f0f8]">
+            CV<span className="text-[#7c5cfc]">ibe</span>
           </div>
-
-          <div className="flex gap-6 text-sm text-gray-500">
-            <a href="#" className="hover:text-purple-600 transition">About</a>
-            <a href="#" className="hover:text-purple-600 transition">Privacy</a>
-            <a href="#" className="hover:text-purple-600 transition">Contact</a>
-          </div>
-
-        </div>
-        <p className="text-center text-xs text-gray-400 mt-6">
-          © 2024 CVibe. All rights reserved.
+        </Link>
+        
+        {/* MIDDLE - Subtitle (.footer-sub) */}
+        <p className="text-[14px] text-[#7070a0] max-w-md md:max-w-xl font-normal m-0 leading-relaxed">
+          Level up your career with AI-driven precision and smart automation.
         </p>
+        
+        {/* MIDDLE - Links (.footer-links with gap: 32px) */}
+        <div className="flex flex-wrap justify-center gap-8 mt-1">
+          <a href="#features-section" className="text-[13px] text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8] cursor-pointer">
+            Features
+          </a>
+          <a href="#templates-section" className="text-[13px] text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8] cursor-pointer">
+            Templates
+          </a>
+          <a href="#how-section" className="text-[13px] text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8] cursor-pointer">
+            How it works
+          </a>
+          <Link to="/login" className="text-[13px] text-[#7070a0] no-underline transition-colors duration-200 hover:text-[#f0f0f8]">
+            Login
+          </Link>
+        </div>
+        
+        {/* BOTTOM - Academic Info (.footer-bottom with color #3a3a5a & mt: 8px) */}
+        <div className="text-[12px] text-[#3a3a5a] mt-2 font-normal tracking-wide">
+          CVibe — Software Engineering Lab, CSE-3642, IIUC Spring 2026
+        </div>
+
       </div>
     </footer>
   );
