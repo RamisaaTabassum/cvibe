@@ -1,3 +1,5 @@
+import GrammarFixer from '../ai/GrammarFixer';
+
 const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
   const handleChange = (field, value) => {
     if (onChange) {
@@ -93,18 +95,11 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
           rows={4}
           className={`${inputStyle} resize-none leading-relaxed`}
         />
-      </div>
-
-      <div className="flex justify-start pt-1">
-        <button 
-          type="button" 
-          className="px-3.5 py-1.5 bg-[#0e241b] border border-[#183c2b] hover:bg-[#123023] text-[#4ade80] text-xs font-semibold rounded-lg flex items-center gap-1.5 transition duration-150 cursor-pointer shadow-sm font-['DM_Sans',sans-serif]"
-        >
-          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 22l-2.5-6.5L3 11l6.5-2.5z" />
-          </svg>
-          Fix Grammar
-        </button>
+        
+        <GrammarFixer
+          text={data?.personalInfo?.summary}
+          onApply={(improved) => handleChange('summary', improved)}
+        />
       </div>
     </div>
   );
