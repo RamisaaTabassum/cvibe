@@ -12,7 +12,6 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
-
 const PublicLayout = () => {
   return (
     <>
@@ -23,7 +22,6 @@ const PublicLayout = () => {
     </>
   );
 };
-
 
 const AppContentLayout = () => {
   return (
@@ -37,25 +35,16 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        
-       
         <div className="min-h-screen flex flex-col bg-[#0a0a0f] text-[#f0f0f8]">
-          
           <Routes>
-            
-            {/* 1. ROUTES WITH GLOBAL NAVBAR & FOOTER */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<Landing />} />
             </Route>
 
-            {/* 2. ROUTES WITH NO GLOBAL NAVBAR (BUT CONTAINS GLOBAL FOOTER) */}
             <Route element={<AppContentLayout />}>
-              
-              {/* AUTH */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
-              {/* DASHBOARD */}
               <Route
                 path="/dashboard"
                 element={
@@ -65,7 +54,6 @@ function App() {
                 }
               />
 
-              {/* BUILDER WORKSPACE */}
               <Route
                 path="/builder"
                 element={
@@ -82,16 +70,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              
             </Route>
-
           </Routes>
 
-          
           <Footer />
-
         </div>
-
       </Router>
     </AuthProvider>
   );

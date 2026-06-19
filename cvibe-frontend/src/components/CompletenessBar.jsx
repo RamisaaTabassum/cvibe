@@ -1,56 +1,54 @@
-
 export default function CompletenessBar({ data }) {
-  // 🔍 Defensive condition checks to verify completed fields safely
   const hasName = data?.personalInfo?.name?.trim().length > 0;
-  
-  const hasSummary = data?.personalInfo?.summary?.trim().length > 0;
 
-  // Handles both array structures and raw string data variants cleanly
-  const hasEducation = Array.isArray(data?.education) 
-    ? data.education.length > 0 && Object.values(data.education[0] || {}).some(val => val?.trim?.() !== '')
-    : !!data?.education?.trim?.();
+  const hasEducation = data?.education?.length > 0 && data.education.some(
+    edu => edu.degree?.trim() || edu.institution?.trim()
+  );
 
-  const hasSkills = Array.isArray(data?.skills)
-    ? data.skills.length > 0 
-    : !!data?.skills?.trim?.();
+  const hasExperience = data?.experience?.length > 0 && data.experience.some(
+    exp => exp.jobTitle?.trim() || exp.company?.trim()
+  );
 
-  // 📐 Percentage Calculation Matrix
+  const hasSkills = (data?.technicalSkills?.trim().length > 0) || (data?.softSkills?.trim().length > 0);
+
+  const hasCertifications = data?.certifications?.length > 0;
+
+  const hasAi = data?.aiKeywords?.length > 0 || data?.jobDescription?.trim().length > 0 || !!data?.aiUsed;
+
   const checklist = [
-    { id: 'name', label: 'Add your name', isDone: hasName },
-    { id: 'edu', label: 'Add education', isDone: hasEducation },
-    { id: 'skills', label: 'Add skills', isDone: hasSkills },
-    { id: 'summary', label: 'Add a summary', isDone: hasSummary },
+    { id: 'name', label: 'Add personal info', isDone: hasName },
+    { id: 'edu', label: 'Add education history', isDone: hasEducation },
+    { id: 'exp', label: 'Add work experience', isDone: hasExperience },
+    { id: 'skills', label: 'Add your skills', isDone: hasSkills },
+    { id: 'certs', label: 'Add certifications', isDone: hasCertifications },
+    { id: 'ai', label: 'Use AI optimization', isDone: hasAi },
   ];
 
   const completedCount = checklist.filter(item => item.isDone).length;
   const percentage = Math.round((completedCount / checklist.length) * 100);
 
   return (
-    <div className="comp-box">
-      {/* Metrics Header Label Line */}
-      <div className="comp-lbl">
+    <div className="mt-8 p-5 bg-[#12121a] border border-[#222233] rounded-xl">
+      <div className="flex items-center justify-between text-xs font-bold tracking-wide text-gray-400 mb-2.5 font-['DM_Sans',sans-serif]">
         <span>CV Completeness</span>
-        <span id="comp-pct">{percentage}%</span>
+        <span className="text-[#4ade80]">{percentage}%</span>
       </div>
-
-      {/* Visual Dynamic Linear Progress Fill Track */}
-      <div className="comp-bar">
+      
+      <div className="w-full h-1.5 bg-[#1c1c2b] rounded-full overflow-hidden">
         <div 
-          className="comp-fill" 
-          id="comp-fill" 
+          className="h-full bg-[#4ade80] rounded-full transition-all duration-500" 
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
 
-      {/* Interactive Status Indicator Checks Checklist */}
-      <div className="comp-tips">
+      <div className="mt-4 space-y-2 text-[12px] text-gray-400 font-['DM_Sans',sans-serif]">
         {checklist.map((item) => (
           <div 
             key={item.id} 
-            className={`ctip ${item.isDone ? 'done' : ''}`}
-            style={{ color: item.isDone ? '#5cfcb8' : 'var(--muted)' }}
+            className={`flex items-center gap-2 ${item.isDone ? 'text-[#4ade80] font-medium' : 'text-gray-500'}`}
           >
-            {item.isDone ? '✓' : '○'} {item.label}
+            <span className="text-sm leading-none">{item.isDone ? '✓' : '⚪'}</span>
+            <span>{item.label}</span>
           </div>
         ))}
       </div>

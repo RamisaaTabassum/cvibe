@@ -22,10 +22,7 @@ const Login = () => {
 
     try {
       await login(email, password);
-
-      // ✅ LOGIN SUCCESS → HOME PAGE
       navigate('/');
-
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password.');
     } finally {
@@ -36,14 +33,11 @@ const Login = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#0a0a0f] px-4 overflow-hidden font-['DM_Sans',sans-serif]">
 
-      {/* Background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_40%,rgba(124,92,252,0.06)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[linear-gradient(#2a2a38_1px,transparent_1px),linear-gradient(90deg,#2a2a38_1px,transparent_1px)] bg-[size:60px_60px] opacity-15 pointer-events-none" />
 
-      {/* Card */}
       <div className="relative z-10 w-full max-w-[440px] bg-[#0d0d12] border border-[#1f1f2e] rounded-2xl p-8 md:p-10 shadow-2xl">
 
-        {/* Close */}
         <button
           onClick={() => navigate('/')}
           className="absolute top-6 right-6 text-[#7070a0] hover:text-[#f0f0f8]"
@@ -51,7 +45,6 @@ const Login = () => {
           ✕
         </button>
 
-        {/* Header */}
         <div className="mb-6">
           <Link to="/" className="text-[28px] font-bold text-white">
             CV<span className="text-[#7c5cfc]">ibe</span>
@@ -66,7 +59,6 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Role switch */}
         <div className="flex bg-[#14141f] p-1 rounded-xl mb-6">
           <button
             type="button"
@@ -89,7 +81,6 @@ const Login = () => {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
 
           <input
@@ -123,7 +114,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Footer */}
         <p className="mt-6 text-sm text-center text-gray-400">
           Don't have an account?{' '}
           <Link to="/register" className="text-[#7c5cfc]">

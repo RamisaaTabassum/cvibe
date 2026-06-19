@@ -1,4 +1,3 @@
-
 const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
   const handleChange = (field, value) => {
     if (onChange) {
@@ -17,20 +16,17 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
 
   return (
     <div className="space-y-5 w-full text-[#f0f0f8]">
-      
-      {/* 1. Full Name */}
       <div className="flex flex-col gap-1.5">
         <label className={labelStyle}>Full Name</label>
         <input
           type="text"
           value={data?.personalInfo?.name || ''}
           onChange={(e) => handleChange('name', e.target.value)}
-          placeholder="e.g. Ramisa Tabassum"
+          placeholder="e.g. Your Name"
           className={inputStyle}
         />
       </div>
 
-      {/* 2. Job Title / Objective */}
       <div className="flex flex-col gap-1.5">
         <label className={labelStyle}>Job Title / Objective</label>
         <input
@@ -42,7 +38,6 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
         />
       </div>
 
-      {/* 3. Email & Phone Row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label className={labelStyle}>Email</label>
@@ -66,7 +61,6 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
         </div>
       </div>
 
-      {/* 4. Location & LinkedIn Row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label className={labelStyle}>Location</label>
@@ -90,7 +84,6 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
         </div>
       </div>
 
-      {/* 5. Professional Summary */}
       <div className="flex flex-col gap-1.5">
         <label className={labelStyle}>Professional Summary</label>
         <textarea
@@ -102,7 +95,6 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
         />
       </div>
 
-      {/* 6. AI Assistant Trigger Button */}
       <div className="flex justify-start pt-1">
         <button 
           type="button" 
@@ -114,7 +106,6 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
           Fix Grammar
         </button>
       </div>
-
     </div>
   );
 };

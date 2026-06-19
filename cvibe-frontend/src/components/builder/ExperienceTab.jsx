@@ -1,8 +1,6 @@
-
 const ExperienceTab = ({ data, onChange }) => {
   const experiences = data?.experience || [];
 
-  // Structural template initialization matching your state's schema
   const addExp = () => {
     onChange({
       ...data,
@@ -29,8 +27,6 @@ const ExperienceTab = ({ data, onChange }) => {
 
   return (
     <div className="space-y-6 w-full text-[#f0f0f8]">
-      
-      {/* Dynamic List Controls Header Header */}
       <div className="flex items-center justify-between pb-2 border-b border-[#2a2a38]">
         <h3 className="text-base font-semibold text-gray-200 font-['DM_Sans',sans-serif]">
           Experience
@@ -44,7 +40,6 @@ const ExperienceTab = ({ data, onChange }) => {
         </button>
       </div>
 
-      {/* Experience Block Lists Card Row */}
       {experiences.map((exp, i) => (
         <div
           key={i}
@@ -63,7 +58,6 @@ const ExperienceTab = ({ data, onChange }) => {
             </button>
           </div>
 
-          {/* 1. Job Title */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
               Job Title
@@ -77,7 +71,6 @@ const ExperienceTab = ({ data, onChange }) => {
             />
           </div>
 
-          {/* 2. Company */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
               Company
@@ -91,7 +84,6 @@ const ExperienceTab = ({ data, onChange }) => {
             />
           </div>
 
-          {/* 3. Side-by-Side Dual Grid: Start Date & End Date */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
@@ -119,7 +111,6 @@ const ExperienceTab = ({ data, onChange }) => {
             </div>
           </div>
 
-          {/* 4. Responsibilities & Achievements Description View */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
               Responsibilities & Achievements
@@ -132,17 +123,14 @@ const ExperienceTab = ({ data, onChange }) => {
               className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg resize-none focus:outline-none focus:border-[#7c5cfc] transition duration-150 leading-relaxed"
             />
           </div>
-
         </div>
       ))}
 
-      {/* Fallback Empty Display Presentation State Context Block */}
       {experiences.length === 0 && (
         <div className="py-8 text-sm text-center text-gray-500 border border-dashed border-[#2a2a38] rounded-xl bg-[#0d0d14]/20">
           Click "+ Add" to add your work experience history records.
         </div>
       )}
-
     </div>
   );
 };

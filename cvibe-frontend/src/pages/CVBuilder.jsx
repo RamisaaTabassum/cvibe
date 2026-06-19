@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Core layout and structural framework components
-import CVBuilderLayout from '../components/CVBuilderLayout';
 import CVPreview from '../components/CVPreview';
+import CompletenessBar from '../components/CompletenessBar';
 
-// Reusable atom UI elements
 import Badge from '../components/UI/Badge';
 import Input from '../components/UI/Input';
 
-// Fixed paths for builder tab workspace panels
 import AIToolsTab from '../components/builder/AIToolsTab';
-import CertsTab from '../components/builder/CertsTab'; // FIX: CertificationsTab থেকে CertsTab-এ পরিবর্তন করা হয়েছে
+import CertsTab from '../components/builder/CertsTab';
 import EducationTab from '../components/builder/EducationTab';
 import ExperienceTab from '../components/builder/ExperienceTab';
 import PersonalTab from '../components/builder/PersonalTab';
@@ -35,31 +32,59 @@ export default function CVBuilder() {
     },
     education: [{ id: '1', institution: '', degree: '' }],
     experience: [{ id: '1', company: '', position: '', duration: '' }],
+    skills: [],
+    certifications: [],
     technicalSkills: '',
     softSkills: '',
-    languages: '',
-    certifications: ''
+    languages: ''
   });
 
   const tabs = ['Personal', 'Education', 'Experience', 'Skills', 'Certifications', 'AI Tools'];
+  
+  const templateOptions = [
+    { id: 'dark', label: 'Dark' },
+    { id: 'purple', label: 'Purple' },
+    { id: 'red', label: 'Bold' }
+  ];
+
   const baseBtnClass = "py-[10px] px-[22px] rounded-[8px] font-['DM_Sans',sans-serif] text-[14px] font-medium cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
 
+  const handleDataChange = (update) => {
+    if (typeof update === 'function') {
+      setCvData((prev) => {
+        const nextState = update(prev);
+        return { ...nextState };
+      });
+    } else {
+      setCvData({ ...update });
+    }
+  };
+
   const renderTabContent = () => {
+    const sharedProps = { 
+      data: cvData, 
+      onChange: handleDataChange, 
+      cvData: cvData, 
+      setCvData: handleDataChange, 
+      Input, 
+      Badge 
+    };
+
     switch (activeTab) {
       case 'Personal':
-        return <PersonalTab cvData={cvData} setCvData={setCvData} Input={Input} Badge={Badge} />;
+        return <PersonalTab {...sharedProps} />;
       case 'Education':
-        return <EducationTab data={cvData} onChange={setCvData} />;
+        return <EducationTab {...sharedProps} />;
       case 'Experience':
-        return <ExperienceTab data={cvData} onChange={setCvData} />;
+        return <ExperienceTab {...sharedProps} />;
       case 'Skills':
-        return <SkillsTab data={cvData} onChange={setCvData} />;
+        return <SkillsTab {...sharedProps} />;
       case 'Certifications':
-        return <CertsTab data={cvData} onChange={setCvData} />; // FIX: <CertsTab /> রেন্ডার করা হচ্ছে
+        return <CertsTab {...sharedProps} />;
       case 'AI Tools':
-        return <AIToolsTab data={cvData} onChange={setCvData} />;
+        return <AIToolsTab {...sharedProps} />;
       default:
-        return <PersonalTab cvData={cvData} setCvData={setCvData} Input={Input} Badge={Badge} />;
+        return <PersonalTab {...sharedProps} />;
     }
   };
 
@@ -74,9 +99,8 @@ export default function CVBuilder() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#0a0a0f] text-[#f0f0f8] overflow-hidden antialiased">
+    <div className="flex flex-col h-screen max-h-screen bg-[#0a0a0f] text-[#f0f0f8] overflow-hidden antialiased">
       
-      {/* Top Navbar */}
       <nav className="w-full bg-[#0a0a0f]/85 backdrop-blur-[16px] border-b border-[#2a2a38] py-[18px] px-6 sm:px-12 md:px-16 lg:px-24 flex items-center justify-between shrink-0 z-50">
         <div 
           onClick={() => navigate("/")}
@@ -104,14 +128,13 @@ export default function CVBuilder() {
         </div>
       </nav>
 
-      {/* Main Framework Workspace Wrapper */}
-      <CVBuilderLayout>
-        <div className="flex flex-col md:flex-row w-full h-full overflow-hidden border border-[#2a2a38] bg-[#0a0a0f] m-0">
+      <div className="flex flex-col flex-1 w-full px-6 pt-4 pb-6 overflow-hidden sm:px-12 md:px-16 lg:px-24">
+        <div className="flex flex-col md:flex-row w-full h-full overflow-hidden border border-[#2a2a38] bg-[#0f0f15] rounded-xl shadow-2xl">
           
-          {/* Left Panel */}
-          <div className="w-full md:w-1/2 flex flex-col justify-between border-r border-[#2a2a38] bg-[#0f0f15] overflow-y-auto p-5 md:p-6 scrollbar-none">
-            <div>
-              <div className="flex bg-[#161622] p-1 rounded-lg border border-[#2a2a38] gap-1 mb-6 w-full overflow-x-auto scrollbar-none">
+          <div className="w-full md:w-1/2 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#2a2a38] bg-[#0f0f15] h-[50vh] md:h-full overflow-y-auto p-5 md:p-6 scrollbar-none relative">
+            
+            <div className="pb-24">
+              <div className="flex bg-[#161622] p-1 rounded-lg border border-[#2a2a38] gap-1 mb-6 w-full overflow-x-auto scrollbar-none shrink-0">
                 {tabs.map((tab) => (
                   <button
                     key={tab}
@@ -132,26 +155,10 @@ export default function CVBuilder() {
                 {renderTabContent()}
               </div>
 
-              {/* Completeness Card */}
-              <div className="mt-8 p-5 bg-[#12121a] border border-[#222233] rounded-xl">
-                <div className="flex items-center justify-between text-xs font-bold tracking-wide text-gray-400 mb-2.5 font-['DM_Sans',sans-serif]">
-                  <span>CV Completeness</span>
-                  <span className="text-[#4ade80]">25%</span>
-                </div>
-                <div className="w-full h-1.5 bg-[#1c1c2b] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#4ade80] rounded-full transition-all duration-500" style={{ width: '25%' }}></div>
-                </div>
-                <div className="mt-4 space-y-2 text-[12px] text-gray-400 font-['DM_Sans',sans-serif]">
-                  <div className="flex items-center gap-2 text-gray-500">⚪ Add your name</div>
-                  <div className="flex items-center gap-2 text-[#4ade80] font-medium">✓ Add education</div>
-                  <div className="flex items-center gap-2 text-gray-500">⚪ Add skills</div>
-                  <div className="flex items-center gap-2 text-gray-500">⚪ Add a summary</div>
-                </div>
-              </div>
+              <CompletenessBar data={cvData} />
             </div>
 
-            {/* Step Control Buttons */}
-            <div className="flex items-center justify-between pt-6 border-t border-[#2a2a38] mt-6 shrink-0">
+            <div className="flex items-center justify-between pt-4 pb-2 border-t border-[#2a2a38] shrink-0 bg-[#0f0f15] sticky bottom-0 left-0 right-0 z-10">
               <button 
                 type="button"
                 onClick={handleBack}
@@ -170,39 +177,38 @@ export default function CVBuilder() {
             </div>
           </div>
 
-          {/* Right Live Preview Column */}
-          <div className="w-full md:w-1/2 flex flex-col bg-[#050508] overflow-hidden p-6 md:p-8 lg:p-12">
-            <div className="flex flex-col gap-3 mb-6 shrink-0">
+          <div className="w-full md:w-1/2 flex flex-col bg-[#050508] h-[50vh] md:h-full p-6 md:p-8 md:overflow-hidden">
+            <div className="flex flex-col gap-3 mb-4 shrink-0">
               <span className="text-[11px] font-bold tracking-wider text-[#505070] uppercase font-['DM_Sans',sans-serif]">
                 LIVE PREVIEW
               </span>
               <div className="flex items-center gap-2">
-                {['Dark', 'Purple', 'Bold'].map((tmpl) => (
+                {templateOptions.map((tmpl) => (
                   <button
-                    key={tmpl}
+                    key={tmpl.id}
                     type="button"
-                    onClick={() => setSelectedTemplate(tmpl.toLowerCase())}
+                    onClick={() => setSelectedTemplate(tmpl.id)}
                     className={`px-4 py-1.5 text-[12px] font-medium rounded-full transition duration-150 cursor-pointer ${
-                      selectedTemplate === tmpl.toLowerCase()
+                      selectedTemplate === tmpl.id
                         ? 'bg-[#7c5cfc] text-white shadow-sm'
                         : 'bg-[#12121a] text-[#7070a0] hover:text-gray-200 border border-[#2a2a38]'
                     }`}
                   >
-                    {tmpl}
+                    {tmpl.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="flex-1 w-full overflow-y-auto bg-[#050508] flex justify-center items-start scrollbar-none">
-              <div className="w-full max-w-[620px] aspect-[1/1.414] shadow-2xl rounded-2xl overflow-hidden bg-white text-black">
+            <div className="flex-1 w-full overflow-y-auto bg-[#050508] flex justify-center items-start scrollbar-none py-2">
+              <div className="w-full max-w-[620px] aspect-[1/1.414] shadow-2xl rounded-2xl overflow-hidden bg-white text-black shrink-0">
                 <CVPreview data={cvData} template={selectedTemplate} />
               </div>
             </div>
           </div>
 
         </div>
-      </CVBuilderLayout>
+      </div>
     </div>
   );
 }

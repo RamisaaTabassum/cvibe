@@ -6,18 +6,14 @@ const AIToolsTab = () => {
 
   const handleGetKeywords = () => {
     console.log('Fetching keywords for:', jobDescription);
-    // Add your API integration handle here
   };
 
   const handleFixGrammar = () => {
     console.log('Fixing grammar for:', fixerText);
-    // Add your API integration handle here
   };
 
   return (
     <div className="space-y-5 w-full text-[#f0f0f8]">
-      
-      {/* Card 1: Keyword Suggestions */}
       <div className="p-5 bg-[#111118] border border-[#221c38] rounded-xl flex flex-col gap-3">
         <div className="flex items-center gap-1.5 text-[14px] font-semibold text-[#a586ff]">
           <span>✦</span> Keyword Suggestions
@@ -39,7 +35,6 @@ const AIToolsTab = () => {
         </button>
       </div>
 
-      {/* Card 2: Grammar & Tone Fixer */}
       <div className="p-5 bg-[#111118] border border-[#14291f] rounded-xl flex flex-col gap-3">
         <div className="flex items-center gap-1.5 text-[14px] font-semibold text-[#4ade80]">
           <span>✦</span> Grammar & Tone Fixer
@@ -60,7 +55,6 @@ const AIToolsTab = () => {
           <span>✦</span> Fix & Improve
         </button>
       </div>
-
     </div>
   );
 };

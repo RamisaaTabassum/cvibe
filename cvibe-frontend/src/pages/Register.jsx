@@ -12,7 +12,6 @@ const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Premium interaction animation classes
   const bounceTransition = "transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.01] active:scale-[0.98]";
 
   const handleSubmit = async (e) => {
@@ -22,7 +21,6 @@ const Register = () => {
 
     try {
       await register(name, email, password);
-      // রেজিস্ট্রেশন সফল হওয়ার পর লগইন পেজে রিডাইরেক্ট হবে
       navigate("/login"); 
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Try again.");
@@ -34,14 +32,11 @@ const Register = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#0a0a0f] px-4 overflow-hidden font-['DM_Sans',sans-serif]">
       
-      {/* Background Glow & Grid Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_40%,rgba(124,92,252,0.06)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[linear-gradient(#2a2a38_1px,transparent_1px),linear-gradient(90deg,#2a2a38_1px,transparent_1px)] bg-[size:60px_60px] opacity-15 pointer-events-none" />
 
-      {/* Card Wrapper Container */}
       <div className="relative z-10 w-full max-w-[440px] bg-[#0d0d12] border border-[#1f1f2e] rounded-2xl p-8 md:p-10 shadow-2xl">
         
-        {/* Close (X) Button - Positioned Top Right based on the screenshot */}
         <Link 
           to="/" 
           className="absolute top-6 right-6 text-[#7070a0] hover:text-[#f0f0f8] transition-colors duration-200"
@@ -52,30 +47,24 @@ const Register = () => {
           </svg>
         </Link>
 
-        {/* Header Block (Left-aligned as shown in Screenshot 2026-06-04 at 2.48.17 PM.png) */}
         <div className="flex flex-col items-start mb-8 text-left">
-          {/* Logo */}
           <Link to="/" className="mb-4 no-underline">
             <div className="font-['Bebas_Neue',sans-serif] text-[28px] tracking-[1.5px] text-[#f0f0f8] select-none leading-none">
               CV<span className="text-[#7c5cfc]">ibe</span>
             </div>
           </Link>
 
-          {/* Title */}
           <h2 className="text-[24px] font-bold text-[#f0f0f8] m-0 tracking-tight">
             Create your account
           </h2>
 
-          {/* Subtitle */}
           <p className="text-[14px] text-[#7070a0] m-0 mt-2.5 leading-relaxed">
             Start building your professional CV for free. No credit card needed.
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Name Input */}
           <div className="flex flex-col">
             <label className="text-[13px] font-medium text-[#7070a0] mb-2">
               Full Name
@@ -90,7 +79,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Email Input */}
           <div className="flex flex-col">
             <label className="text-[13px] font-medium text-[#7070a0] mb-2">
               Email
@@ -105,7 +93,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Password Input */}
           <div className="flex flex-col">
             <label className="text-[13px] font-medium text-[#7070a0] mb-2">
               Password
@@ -121,14 +108,12 @@ const Register = () => {
             />
           </div>
 
-          {/* Error Message Alert */}
           {error && (
             <div className="text-[13px] text-[#fc5c7d] bg-[#fc5c7d]/10 border border-[#fc5c7d]/20 py-2.5 px-3 rounded-lg text-center font-medium">
               ⚠️ {error}
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -138,7 +123,6 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Footer */}
         <p className="text-center text-[14px] text-[#7070a0] mt-8 mb-0">
           Already have an account?{" "}
           <Link to="/login" className="text-[#7c5cfc] font-medium no-underline hover:underline transition-all ml-1">

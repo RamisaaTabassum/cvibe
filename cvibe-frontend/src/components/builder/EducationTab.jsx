@@ -1,10 +1,7 @@
-
 const EducationTab = ({ data, onChange }) => {
-  // Safe state mutation for array-nested flat object inputs
   const handleChange = (field, value) => {
     const updatedEducation = [...(data?.education || [])];
     
-    // Ensure the first entry object exists before updating fields
     if (!updatedEducation[0]) {
       updatedEducation[0] = {
         degree: '',
@@ -23,13 +20,10 @@ const EducationTab = ({ data, onChange }) => {
     });
   };
 
-  // Extract the active work item safely for cleaner value rendering
   const currentEdu = data?.education?.[0] || {};
 
   return (
     <div className="space-y-4 w-full text-[#f0f0f8]">
-      
-      {/* 1. Degree (Full Width) */}
       <div className="flex flex-col gap-1.5">
         <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
           Degree
@@ -43,7 +37,6 @@ const EducationTab = ({ data, onChange }) => {
         />
       </div>
 
-      {/* 2. Institution (Full Width) */}
       <div className="flex flex-col gap-1.5">
         <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
           Institution
@@ -57,7 +50,6 @@ const EducationTab = ({ data, onChange }) => {
         />
       </div>
 
-      {/* 3. Side-by-Side Grid Row: Start Year & End Year */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
@@ -85,7 +77,6 @@ const EducationTab = ({ data, onChange }) => {
         </div>
       </div>
 
-      {/* 4. CGPA (Full Width) */}
       <div className="flex flex-col gap-1.5">
         <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
           CGPA
@@ -98,7 +89,6 @@ const EducationTab = ({ data, onChange }) => {
           className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
         />
       </div>
-
     </div>
   );
 };
