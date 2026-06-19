@@ -49,17 +49,17 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email ও password দাও' });
+      return res.status(400).json({ message: 'Email and password are required' });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Email বা password ভুল' });
+      return res.status(401).json({ message: 'Email or password is wrong' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Email বা password ভুল' });
+      return res.status(401).json({ message: 'Email or password is wrong' });
     }
 
     res.json({

@@ -11,7 +11,7 @@ const protect = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({ message: 'Login' });
+      return res.status(401).json({ message: 'Not authorized, no token' });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -19,7 +19,7 @@ const protect = async (req, res, next) => {
     next();
 
   } catch (error) {
-    res.status(401).json({ message: 'Token valid না' });
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
 
