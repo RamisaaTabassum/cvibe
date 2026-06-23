@@ -11,8 +11,6 @@ export default function CompletenessBar({ data }) {
 
   const hasSkills = (data?.technicalSkills?.trim().length > 0) || (data?.softSkills?.trim().length > 0);
 
-  const hasCertifications = data?.certifications?.length > 0;
-
   const hasAi = data?.aiKeywords?.length > 0 || data?.jobDescription?.trim().length > 0 || !!data?.aiUsed;
 
   const checklist = [
@@ -20,7 +18,6 @@ export default function CompletenessBar({ data }) {
     { id: 'edu', label: 'Add education history', isDone: hasEducation },
     { id: 'exp', label: 'Add work experience', isDone: hasExperience },
     { id: 'skills', label: 'Add your skills', isDone: hasSkills },
-    { id: 'certs', label: 'Add certifications', isDone: hasCertifications },
     { id: 'ai', label: 'Use AI optimization', isDone: hasAi },
   ];
 

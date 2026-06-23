@@ -48,7 +48,7 @@ const SkillsTab = ({ data, onChange }) => {
           <button 
             type="button"
             onClick={() => { addSkill(input); setInput(''); }}
-            className="bg-[#7c5cfc] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#694bd9] transition"
+            className="bg-[#7c5cfc] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#694bd9] transition cursor-pointer"
           >
             Add
           </button>
@@ -64,7 +64,7 @@ const SkillsTab = ({ data, onChange }) => {
               <button 
                 type="button"
                 onClick={() => removeSkill(skill)}
-                className="text-gray-500 transition hover:text-red-500"
+                className="text-gray-500 transition cursor-pointer hover:text-red-500"
               >
                 ✕
               </button>
@@ -77,6 +77,7 @@ const SkillsTab = ({ data, onChange }) => {
         </div>
       </div>
 
+      {/* Technical Skills */}
       <div className="flex flex-col gap-1.5">
         <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
           Technical Skills
@@ -90,6 +91,7 @@ const SkillsTab = ({ data, onChange }) => {
         />
       </div>
 
+      
       <div className="flex flex-col gap-1.5">
         <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
           Soft Skills
@@ -113,6 +115,19 @@ const SkillsTab = ({ data, onChange }) => {
           onChange={(e) => handleChange('languages', e.target.value)}
           placeholder="Bengali (Native), English (Professional)"
           className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[13px] font-medium text-gray-400 font-['DM_Sans',sans-serif]">
+          Certifications
+        </label>
+        <textarea
+          rows={3}
+          value={data?.certifications || ''}
+          onChange={(e) => handleChange('certifications', e.target.value)}
+          placeholder="Meta Frontend Developer Certificate (Coursera, 2024)"
+          className="w-full px-4 py-3 text-sm bg-[#12121a] border border-[#2a2a38] text-white rounded-lg focus:outline-none focus:border-[#7c5cfc] transition duration-150 resize-y"
         />
       </div>
 

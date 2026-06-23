@@ -1,4 +1,3 @@
-
 const PurpleTemplate = ({ data }) => {
   const { 
     personalInfo, 
@@ -17,6 +16,7 @@ const PurpleTemplate = ({ data }) => {
   return (
     <div className="w-full min-h-[297mm] bg-white text-gray-800 font-sans flex flex-col overflow-hidden rounded-xl">
       
+      {/* Header Section */}
       <div className="bg-[#7c5cfc] text-white p-8 md:p-10 flex flex-col justify-center">
         <h1 className="text-2xl italic font-black tracking-wider text-white uppercase md:text-3xl">
           {name || 'Your Name'}
@@ -33,8 +33,10 @@ const PurpleTemplate = ({ data }) => {
         </div>
       </div>
 
+      {/* Main Content Body */}
       <div className="flex flex-col flex-1 gap-6 p-8 bg-white md:p-10">
         
+        {/* Summary Section */}
         <div>
           <div className="border-b border-gray-200 pb-1.5 mb-2.5">
             <h2 className="text-xs font-bold tracking-widest text-[#7c5cfc] uppercase">
@@ -48,6 +50,7 @@ const PurpleTemplate = ({ data }) => {
           )}
         </div>
 
+        {/* Education Section */}
         <div>
           <div className="border-b border-gray-200 pb-1.5 mb-2.5">
             <h2 className="text-xs font-bold tracking-widest text-[#7c5cfc] uppercase">
@@ -81,6 +84,7 @@ const PurpleTemplate = ({ data }) => {
           )}
         </div>
 
+        {/* Experience Section */}
         <div>
           <div className="border-b border-gray-200 pb-1.5 mb-2.5">
             <h2 className="text-xs font-bold tracking-widest text-[#7c5cfc] uppercase">
@@ -116,6 +120,7 @@ const PurpleTemplate = ({ data }) => {
           )}
         </div>
 
+        {/* Skills & Languages Section */}
         <div>
           <div className="border-b border-gray-200 pb-1.5 mb-2.5">
             <h2 className="text-xs font-bold tracking-widest text-[#7c5cfc] uppercase">
@@ -148,28 +153,10 @@ const PurpleTemplate = ({ data }) => {
               Certifications
             </h2>
           </div>
-          {certifications?.length > 0 ? (
-            <div className="space-y-2">
-              {Array.isArray(certifications) ? (
-                certifications.map((cert, i) => (
-                  <div key={i} className="text-sm text-gray-600">
-                    {typeof cert === 'object' ? (
-                      <div className="flex items-baseline justify-between">
-                        <p className="font-medium text-gray-700">
-                          {cert.name || 'Certificate Name'} 
-                          {cert.issuer && <span className="italic font-normal text-gray-400"> ({cert.issuer})</span>}
-                        </p>
-                        {cert.year && <span className="text-xs text-gray-400">{cert.year}</span>}
-                      </div>
-                    ) : (
-                      <p>{cert}</p>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-600">{certifications}</p>
-              )}
-            </div>
+          {certifications && certifications.trim().length > 0 ? (
+            <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">
+              {certifications}
+            </p>
           ) : (
             <p className="text-sm italic text-gray-400">Certifications will appear here...</p>
           )}

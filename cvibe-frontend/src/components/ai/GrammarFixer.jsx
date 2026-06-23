@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { fixGrammar } from '../../utils/aiApi';
+
 const GrammarFixer = ({ text, onApply }) => {
   const [improved, setImproved] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
   const handleFix = async () => {
     if (!text?.trim()) return;
     setLoading(true);
@@ -17,36 +19,46 @@ const GrammarFixer = ({ text, onApply }) => {
       setLoading(false);
     }
   };
-   return (
+
+  return (
     <div className="mt-2">
       <button
         onClick={handleFix}
         disabled={loading || !text?.trim()}
-        className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full hover:bg-purple-200 transition disabled:opacity-50"
+        className={`px-3 py-1 text-xs font-medium transition-all duration-200 rounded-full cursor-pointer
+          ${loading || !text?.trim()
+            ? 'bg-[#7c5cfc] text-[#f0f5ff] cursor-not-allowed border border-[#7c5cfc]/20'
+            : 'bg-[#7c5cfc] text-white hover:bg-[#6441e3] shadow-md shadow-[#7c5cfc]/10'
+          }`}
       >
         {loading ? 'AI Fixing...' : 'Fix with AI'}
       </button>
 
       {error && (
-        <p className="text-red-500 text-xs mt-1">{error}</p>
+        <p className="mt-1 text-xs font-medium text-red-400">{error}</p>
       )}
 
       {improved && (
-        <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-3">
-          <p className="text-xs text-green-700 mb-1 font-medium">
-            AI Improved Version:
-          </p>
+        <div className="p-3 mt-3 border border-[#10b981]/30 rounded-xl bg-[#0d1614] relative overflow-hidden">
+        
+          <div className="absolute top-0 right-0 w-[60px] h-[60px] bg-[#10b981]/5 rounded-full blur-[20px] pointer-events-none" />
+          
+          <div className="relative z-10">
+            <p className="mb-1.5 text-[11px] font-bold text-[#10b981] uppercase tracking-wider">
+              ✦ AI Improved Version
+            </p>
 
-          <p className="text-sm text-gray-700 leading-relaxed">
-            {improved}
-          </p>
+            <p className="text-sm leading-relaxed text-[#e5e7eb] mb-2.5">
+              {improved}
+            </p>
 
-          <button
-            onClick={() => onApply && onApply(improved)}
-            className="mt-2 text-xs bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition"
-          >
-            Apply Changes
-          </button>
+            <button
+              onClick={() => onApply && onApply(improved)}
+              className="px-3 py-1 text-xs font-semibold text-white transition-all duration-200 bg-[#10b981] rounded-full hover:bg-[#059669] cursor-pointer shadow-lg shadow-[#10b981]/10"
+            >
+              Apply Changes
+            </button>
+          </div>
         </div>
       )}
     </div>

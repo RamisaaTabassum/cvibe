@@ -8,7 +8,6 @@ import Badge from '../components/UI/Badge';
 import Input from '../components/UI/Input';
 
 import AIToolsTab from '../components/builder/AIToolsTab';
-import CertsTab from '../components/builder/CertsTab';
 import EducationTab from '../components/builder/EducationTab';
 import ExperienceTab from '../components/builder/ExperienceTab';
 import PersonalTab from '../components/builder/PersonalTab';
@@ -40,13 +39,13 @@ export default function CVBuilder() {
     education: [{ id: '1', institution: '', degree: '' }],
     experience: [{ id: '1', company: '', position: '', duration: '' }],
     skills: [],
-    certifications: [],
+    certifications: '', 
     technicalSkills: '',
     softSkills: '',
     languages: ''
   });
 
-  const tabs = ['Personal', 'Education', 'Experience', 'Skills', 'Certifications', 'AI Tools'];
+  const tabs = ['Personal', 'Education', 'Experience', 'Skills', 'AI Tools'];
   
   const templateOptions = [
     { id: 'dark', label: 'Dark' },
@@ -102,9 +101,7 @@ export default function CVBuilder() {
       case 'Experience':
         return <ExperienceTab {...sharedProps} />;
       case 'Skills':
-        return <SkillsTab {...sharedProps} />;
-      case 'Certifications':
-        return <CertsTab {...sharedProps} />;
+        return <SkillsTab {...sharedProps} />; 
       case 'AI Tools':
         return <AIToolsTab {...sharedProps} />;
       default:
