@@ -1,5 +1,5 @@
 const DarkTemplate = ({ data }) => {
-  // 🛡️ সেফটি এবং তোমার personalInfo অবজেক্টের সাথে ম্যাপিং
+ 
   const { personalInfo, experience, education, skills } = data || {};
   const { name, title, email, phone, location, summary } = personalInfo || {};
 

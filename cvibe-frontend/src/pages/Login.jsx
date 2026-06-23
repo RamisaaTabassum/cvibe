@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // 'user' অথবা 'admin' ট্র্যাক করার জন্য স্টেট
+  const [role, setRole] = useState('user'); 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();

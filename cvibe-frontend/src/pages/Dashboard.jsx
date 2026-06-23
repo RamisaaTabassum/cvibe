@@ -6,7 +6,7 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // শুরুতে সব ডিফল্ট ০ ও খালি থাকবে
+
   const [cvs, setCvs] = useState([]); 
 
   const userName = user?.name || "User";
@@ -16,7 +16,7 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  // ল্যান্ডিং পেজ বাটন স্টাইলের সাথে সামঞ্জস্যপূর্ণ Spring/Bounce হোভার ইফেক্ট ক্লাস
+  
   const baseBtnClass = "py-[10px] px-[22px] rounded-[8px] font-['DM_Sans',sans-serif] text-[14px] font-medium cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
 
   return (

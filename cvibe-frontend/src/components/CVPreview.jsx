@@ -1,6 +1,6 @@
 
 const CVPreview = ({ data, template = 'dark' }) => {
-  // স্ক্রিনশট ৪ এর ডিজাইনের সাথে ম্যাচিং জেনেশুয়ে ডার্ক/পার্পল ব্যানার লেআউট
+  
   const getHeaderBg = () => {
     if (template === 'purple') return 'bg-[#7c5cfc] text-white';
     if (template === 'bold') return 'bg-[#fc5c7d] text-white';
