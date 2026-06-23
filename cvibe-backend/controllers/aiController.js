@@ -1,6 +1,9 @@
 const { GoogleGenAI, Type } = require('@google/genai');
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ 
+  apiKey: process.env.GEMINI_API_KEY,
+  forceTokenAuth: true 
+});
 
 const extractKeywords = async (req, res) => {
   try {
@@ -11,7 +14,7 @@ const extractKeywords = async (req, res) => {
 
     // GoogleGenAI SDK-er dynamic structure configuration matching responseSchema runtime setup
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash', // Model production pipeline verification check parameters update (Use standard model strings)
+      model: 'gemini-2.5-flash', 
       contents: `Extract the most important technical and soft keywords from this job description for a CV/resume. Job Description: ${jobDescription}`,
       config: {
         responseMimeType: "application/json",
