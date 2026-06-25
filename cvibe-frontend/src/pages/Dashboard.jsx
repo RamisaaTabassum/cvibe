@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import LoadingSpinner from "../components/LoadingSpinner";
+import EmptyState from "../components/EmptyState";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
-  // শুরুতে সব ডিফল্ট ০ ও খালি থাকবে
-  const [cvs, setCvs] = useState([]); 
+const [loading, setLoading] = useState(false);
+const [cvs, setCvs] = useState([]);
 
   const userName = user?.name || "User";
 
@@ -15,8 +16,15 @@ export default function Dashboard() {
     logout();
     navigate("/");
   };
+  if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <LoadingSpinner text="Loading your dashboard..." />
+    </div>
+  );
+}
 
-  // ল্যান্ডিং পেজ বাটন স্টাইলের সাথে সামঞ্জস্যপূর্ণ Spring/Bounce হোভার ইফেক্ট ক্লাস
+
   const baseBtnClass = "py-[10px] px-[22px] rounded-[8px] font-['DM_Sans',sans-serif] text-[14px] font-medium cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
 
   return (
@@ -113,13 +121,13 @@ export default function Dashboard() {
               </div>
               
               {/* Baseline Empty State view */}
-              {cvs.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-center py-14 text-[var(--muted)]">
-                  <div className="text-[40px] mb-2 opacity-20">📄</div>
-                  <h4 className="text-[14px] font-semibold text-[var(--text)] font-['DM_Sans',sans-serif]">No CVs found</h4>
-                  <p className="text-[12px] text-[var(--muted)] max-w-xs mt-1 font-['DM_Sans',sans-serif]">Create your first document to get started.</p>
-                </div>
-              ) : (
+                  {cvs.length === 0 ? (
+                  <EmptyState
+                    icon="📄"
+                    title="No CVs found"
+                    description="Create your first document to get started."
+                  />
+                ) : (
                 <div className="space-y-3">
                   {cvs.map((cv) => (
                     <div 

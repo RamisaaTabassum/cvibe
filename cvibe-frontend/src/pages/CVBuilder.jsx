@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import html2pdf from "html2pdf.js";
 
 // Core layout and structural components
 import CompletenessBar from '../components/CompletenessBar';
@@ -26,7 +27,7 @@ export default function CVBuilder() {
   const [activeTab, setActiveTab] = useState('Personal');
   const [selectedTemplate, setSelectedTemplate] = useState('dark');
 
-  // Centralized global state configuration for CV data
+  // CV data state
   const [cvData, setCvData] = useState({
     personalInfo: {
       name: '',
@@ -45,7 +46,7 @@ export default function CVBuilder() {
 
   const tabs = ['Personal', 'Education', 'Experience', 'Skills', 'AI Tools'];
 
-  // Contextual view switcher for tabs
+  // Render active tab
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Personal':
@@ -63,7 +64,7 @@ export default function CVBuilder() {
     }
   };
 
-  // Stepper wizard navigation actions
+ // Navigation handlers
   const handleNext = () => {
     const currentIndex = tabs.indexOf(activeTab);
     if (currentIndex < tabs.length - 1) {
@@ -77,11 +78,42 @@ export default function CVBuilder() {
       setActiveTab(tabs[currentIndex - 1]);
     }
   };
+  const handleDownloadPDF = () => {
+  const element = document.getElementById("cv-preview-content");
+
+  if (!element) {
+    alert("CV preview not found.");
+    return;
+  }
+
+  const fileName =
+    cvData.personalInfo.name?.trim() || "My-CV";
+
+  const options = {
+    margin: 0,
+    filename: `${fileName}.pdf`,
+    image: {
+      type: "jpeg",
+      quality: 1
+    },
+    html2canvas: {
+      scale: 2,
+      useCORS: true
+    },
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait"
+    }
+  };
+
+  html2pdf().set(options).from(element).save();
+};
 
   return (
     <div className="flex flex-col h-screen bg-[#0a0a0f] text-[#f0f0f8] overflow-hidden antialiased">
       
-      {/* Global Application Top Header Navigation */}
+     /* Top Navigation */
       <nav className="w-full h-16 border-b border-[#2a2a38] bg-[#0a0a0f] px-6 sm:px-12 flex items-center justify-between shrink-0 z-50">
         <div 
           onClick={() => navigate("/")}
@@ -92,9 +124,12 @@ export default function CVBuilder() {
         
         <div className="flex items-center gap-4">
           <span className="text-[13px] text-gray-400 hidden sm:inline font-['DM_Sans',sans-serif]">Editing: My CV</span>
-          <Button variant="pink">
-            Download PDF
-          </Button>
+                  <Button
+          variant="pink"
+          onClick={handleDownloadPDF}
+        >
+          Download PDF
+        </Button>
           <Button 
             variant="secondary"
             onClick={() => navigate("/dashboard")}
