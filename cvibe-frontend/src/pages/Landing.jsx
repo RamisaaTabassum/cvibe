@@ -7,6 +7,18 @@ export default function Landing() {
 
   const bounceTransition = "transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
 
+  const handleCTA = () => {
+    if (user) {
+      if (user.role === 'admin') {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    } else {
+      navigate("/register");
+    }
+  };
+
   return (
     <section
       id="landing"
@@ -38,7 +50,7 @@ export default function Landing() {
 
         <div className="flex flex-wrap gap-[14px] justify-center items-center w-full px-4">
           <button
-            onClick={() => navigate(user ? "/dashboard" : "/register")}
+            onClick={handleCTA}
             className={`w-full sm:w-auto py-3.5 px-8 text-[15px] font-semibold rounded-[10px] bg-[#7c5cfc] text-white border-none shadow-lg shadow-[#7c5cfc]/10 hover:shadow-[#7c5cfc]/25 cursor-pointer ${bounceTransition}`}
           >
             Build My CV Free ↗

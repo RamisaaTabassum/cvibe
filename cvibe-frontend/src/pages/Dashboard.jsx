@@ -6,7 +6,6 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // শুরুতে সব ডিফল্ট ০ ও খালি থাকবে
   const [cvs, setCvs] = useState([]); 
 
   const userName = user?.name || "User";
@@ -16,17 +15,14 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  // ল্যান্ডিং পেজ বাটন স্টাইলের সাথে সামঞ্জস্যপূর্ণ Spring/Bounce হোভার ইফেক্ট ক্লাস
   const baseBtnClass = "py-[10px] px-[22px] rounded-[8px] font-['DM_Sans',sans-serif] text-[14px] font-medium cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
 
   return (
     <div id="user-dashboard" className="min-h-screen bg-[var(--bg)] text-[var(--text)] font-['DM_Sans',sans-serif] flex flex-col antialiased">
       
-      {/* 🧭 MATCHING FIXED NAVBAR */}
       <nav className="dashboard-nav fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0f]/95 backdrop-blur-[16px] border-b border-[#2a2a38] py-[18px] px-6 sm:px-12 md:px-16 lg:px-24">
         <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between">
           
-          {/* .dash-logo */}
           <div 
             onClick={() => navigate("/")}
             className="dash-logo font-['Bebas_Neue',sans-serif] text-[28px] tracking-[2px] text-[var(--text)] cursor-pointer select-none leading-none"
@@ -34,7 +30,6 @@ export default function Dashboard() {
             CV<span className="text-[var(--accent)]">ibe</span>
           </div>
           
-          {/* Right Action Controls */}
           <div className="flex items-center gap-[12px]">
             <button 
               onClick={() => navigate("/builder")} 
@@ -43,13 +38,13 @@ export default function Dashboard() {
               + New CV
             </button>
             
-            {/* .user-info */}
+      
             <div className="flex items-center gap-[12px] user-info">
-              {/* .user-avatar */}
+          
               <div className="user-avatar w-[36px] h-[36px] rounded-full bg-[var(--accent)] flex items-center justify-center text-[14px] font-semibold text-white uppercase font-['DM_Sans',sans-serif]">
                 {userName[0]}
               </div>
-              {/* .user-name */}
+            
               <span className="user-name text-[14px] font-medium text-[var(--text)] hidden sm:inline font-['DM_Sans',sans-serif]">{userName}</span>
             </div>
             
@@ -64,10 +59,9 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      {/* 📊 .dashboard-body (Strictly 1600px limits & side padding) */}
       <main className="dashboard-body pt-[110px] pb-12 px-6 sm:px-12 md:px-16 lg:px-24 w-full max-w-[1600px] mx-auto flex-grow">
         
-        {/* .dash-welcome */}
+    
         <div className="mb-10 dash-welcome">
           <h1 className="font-['Bebas_Neue',sans-serif] text-[42px] sm:text-[46px] md:text-[52px] tracking-[2px] mb-2 text-[var(--text)] uppercase leading-none">
             WELCOME BACK, <span className="text-[var(--accent)]">{userName}</span>
@@ -75,7 +69,6 @@ export default function Dashboard() {
           <p className="text-[14px] sm:text-[15px] text-[var(--muted)] font-['DM_Sans',sans-serif]">Here's an overview of your CV activity and quick actions.</p>
         </div>
 
-        {/* 📈 .dash-stats */}
         <div className="grid grid-cols-2 gap-4 mb-10 dash-stats lg:grid-cols-4">
           {[
             { icon: "📄", num: cvs.length, label: "CVs Created" },
@@ -95,13 +88,13 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* 🗂️ .dash-grid */}
+ 
         <div className="dash-grid grid grid-cols-1 lg:grid-cols-[2.2fr_1fr] gap-6 items-start">
 
-          {/* Left Block Panel: Your CVs */}
+        
           <div className="dash-panel bg-[var(--surface)] border border-[var(--border)] rounded-[16px] p-5 md:p-6 flex flex-col justify-between min-h-[380px]">
             <div>
-              {/* .panel-hdr */}
+     
               <div className="flex items-center justify-between mb-5 panel-hdr">
                 <h3 className="panel-title text-[15px] font-semibold text-[var(--text)] font-['DM_Sans',sans-serif]">Your CVs</h3>
                 <button 
@@ -112,7 +105,7 @@ export default function Dashboard() {
                 </button>
               </div>
               
-              {/* Baseline Empty State view */}
+             
               {cvs.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-center py-14 text-[var(--muted)]">
                   <div className="text-[40px] mb-2 opacity-20">📄</div>
@@ -158,7 +151,6 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Right Block Panel: Quick Actions */}
           <div className="dash-panel bg-[var(--surface)] border border-[var(--border)] rounded-[16px] p-5 md:p-6">
             <h3 className="panel-title text-[15px] font-semibold text-[var(--text)] mb-5 font-['DM_Sans',sans-serif]">Quick Actions</h3>
             

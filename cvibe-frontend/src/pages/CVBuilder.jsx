@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import CVPreview from '../components/CVPreview';
@@ -14,7 +14,7 @@ import PersonalTab from '../components/builder/PersonalTab';
 import SkillsTab from '../components/builder/SkillsTab';
 
 import Toast from '../components/Toast';
-import { createCV, updateCV } from '../utils/cvApi';
+import { createCV, getCVById, updateCV } from '../utils/cvApi';
 
 export default function CVBuilder() {
   const navigate = useNavigate();
@@ -45,6 +45,25 @@ export default function CVBuilder() {
     languages: ''
   });
 
+  useEffect(() => {
+    const fetchCV = async () => {
+      if (id) {
+        try {
+          const res = await getCVById(id);
+          if (res.data?.success && res.data.cv) {
+            setCvData(res.data.cv);
+            if (res.data.cv.template) {
+              setSelectedTemplate(res.data.cv.template);
+            }
+          }
+        } catch (err) {
+          setToast({ message: 'Failed to load CV data.', type: 'error' });
+        }
+      }
+    };
+    fetchCV();
+  }, [id]);
+
   const tabs = ['Personal', 'Education', 'Experience', 'Skills', 'AI Tools'];
   
   const templateOptions = [
@@ -60,11 +79,14 @@ export default function CVBuilder() {
     try {
       if (id) {
         await updateCV(id, { ...cvData, template: selectedTemplate });
+        setToast({ message: 'CV updated successfully!', type: 'success' });
       } else {
         const res = await createCV({ ...cvData, template: selectedTemplate });
-        navigate(`/builder/${res.data.cv._id}`, { replace: true });
+        if (res.data?.cv?._id) {
+          setToast({ message: 'CV saved successfully!', type: 'success' });
+          navigate(`/builder/${res.data.cv._id}`, { replace: true });
+        }
       }
-      setToast({ message: 'CV saved successfully!', type: 'success' });
     } catch (err) {
       setToast({ message: 'Save failed! Try again.', type: 'error' });
     } finally {

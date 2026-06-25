@@ -21,8 +21,12 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/');
+      await login(email, password, role);
+      if (role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password.');
     } finally {
