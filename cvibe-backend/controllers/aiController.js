@@ -1,6 +1,9 @@
 const { GoogleGenAI, Type } = require('@google/genai');
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ 
+  apiKey: process.env.GEMINI_API_KEY,
+  forceTokenAuth: true 
+});
 
 const extractKeywords = async (req, res) => {
   try {
