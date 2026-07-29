@@ -1,5 +1,4 @@
-const CV = require('../models/CV');
-
+const CV = require('../models/Cv');
 
 const createCV = async (req, res) => {
   try {
@@ -84,5 +83,22 @@ const deleteCV = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const incrementDownload = async (req, res) => {
+  try {
+    const cv = await CV.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { downloads: 1 } }, 
+      { new: true }
+    );
 
-module.exports = { createCV, getMyCVs, getCVById, updateCV, deleteCV };
+    if (!cv) {
+      return res.status(404).json({ message: 'CV not found' });
+    }
+
+    res.json({ success: true, message: 'Download count updated', downloads: cv.downloads });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { createCV, getMyCVs, getCVById, updateCV, deleteCV, incrementDownload };
