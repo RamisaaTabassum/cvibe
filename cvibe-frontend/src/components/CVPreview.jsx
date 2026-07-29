@@ -3,14 +3,22 @@ import PurpleTemplate from '../templates/PurpleTemplate';
 import RedTemplate from '../templates/RedTemplate';
 
 export default function CVPreview({ data, template }) {
-  switch (template) {
-    case 'dark':
-      return <DarkTemplate data={data} />;
-    case 'purple':
-      return <PurpleTemplate data={data} />;
-    case 'red':
-      return <RedTemplate data={data} />;
-    default:
-      return <DarkTemplate data={data} />;
-  }
+  const renderTemplate = () => {
+    switch (template) {
+      case 'dark':
+        return <DarkTemplate data={data} />;
+      case 'purple':
+        return <PurpleTemplate data={data} />;
+      case 'red':
+        return <RedTemplate data={data} />;
+      default:
+        return <DarkTemplate data={data} />;
+    }
+  };
+
+  return (
+    <div id="cv-preview-content" className="w-full overflow-hidden border border-gray-200 rounded-lg shadow-lg">
+      {renderTemplate()}
+    </div>
+  );
 }

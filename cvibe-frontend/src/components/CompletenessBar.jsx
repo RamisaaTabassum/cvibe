@@ -1,17 +1,30 @@
 export default function CompletenessBar({ data }) {
-  const hasName = data?.personalInfo?.name?.trim().length > 0;
-
-  const hasEducation = data?.education?.length > 0 && data.education.some(
-    edu => edu.degree?.trim() || edu.institution?.trim()
+  // ১. Personal Info Check 
+  const hasName = Boolean(
+    data?.personalInfo?.name?.trim() || 
+    data?.personalInfo?.fullName?.trim()
   );
 
-  const hasExperience = data?.experience?.length > 0 && data.experience.some(
-    exp => exp.jobTitle?.trim() || exp.company?.trim()
+  // ২. Education Check
+  const hasEducation = Array.isArray(data?.education) && data.education.length > 0 && data.education.some(
+    edu => edu?.degree?.trim() || edu?.institution?.trim()
   );
 
-  const hasSkills = (data?.technicalSkills?.trim().length > 0) || (data?.softSkills?.trim().length > 0);
+  const hasExperience = Array.isArray(data?.experience) && data.experience.length > 0 && data.experience.some(
+    exp => exp?.position?.trim() || exp?.jobTitle?.trim() || exp?.company?.trim()
+  );
 
-  const hasAi = data?.aiKeywords?.length > 0 || data?.jobDescription?.trim().length > 0 || !!data?.aiUsed;
+  const hasSkills = Boolean(
+    (Array.isArray(data?.skills) && data.skills.length > 0) ||
+    data?.technicalSkills?.trim() ||
+    data?.softSkills?.trim()
+  );
+
+  const hasAi = Boolean(
+    data?.aiUsed || 
+    (Array.isArray(data?.aiKeywords) && data.aiKeywords.length > 0) || 
+    data?.jobDescription?.trim()
+  );
 
   const checklist = [
     { id: 'name', label: 'Add personal info', isDone: hasName },

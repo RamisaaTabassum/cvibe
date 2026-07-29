@@ -35,7 +35,7 @@ const Footer = () => {
         
    
         <div className="text-[12px] text-[#3a3a5a] mt-2 font-normal tracking-wide">
-          CVibe — Software Engineering Lab, CSE-3642, IIUC Spring 2026
+          CVibe 
         </div>
 
       </div>

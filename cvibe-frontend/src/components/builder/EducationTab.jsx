@@ -12,8 +12,12 @@ const EducationTab = ({ data, onChange }) => {
       };
     }
     
-    updatedEducation[0][field] = value;
+    updatedEducation[0] = {
+      ...updatedEducation[0],
+      [field]: value
+    };
 
+    // Parent component
     onChange({
       ...data,
       education: updatedEducation
