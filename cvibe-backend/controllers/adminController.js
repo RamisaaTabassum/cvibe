@@ -1,88 +1,158 @@
-const User = require('../models/User');
-const CV = require('../models/CV');
+const User = require("../models/User");
+const CV = require("../models/Cv");
 
-// Get all users
+// Get All Users
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
-      .select('-password')
-      .sort({ createdAt: -1 });
+      .select("-password -__v")
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.json({
+    res.status(200).json({
       success: true,
       total: users.length,
       users,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get Users Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+      error: error.message,
+    });
   }
 };
 
-// Get all CVs
+// Get All CVs
 const getAllCVs = async (req, res) => {
   try {
     const cvs = await CV.find()
-      .populate('user', 'name email')
-      .sort({ createdAt: -1 });
+      .populate({
+        path: "user",
+        select: "name email",
+      })
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.json({
+    res.status(200).json({
       success: true,
       total: cvs.length,
       cvs,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get CVs Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch CVs",
+      error: error.message,
+    });
   }
 };
 
-// Delete user
+// Delete User
 const deleteUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const { id } = req.params;
+
+    // Prevent deleting yourself
+    if (req.user && req.user.id === id) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own account.",
+      });
+    }
+
+    const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
     }
 
-    if (user.role === 'admin') {
-      return res.status(403).json({ message: 'Admin cannot be deleted' });
+    // Prevent deleting another admin
+    if (user.role === "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admin cannot be deleted.",
+      });
     }
 
+    // Delete user's CVs
+    await CV.deleteMany({ user: id });
 
-    await CV.deleteMany({ user: req.params.id });
+    // Delete user
+    await User.findByIdAndDelete(id);
 
-    // User delete
-    await User.findByIdAndDelete(req.params.id);
-
-    res.json({ success: true, message: 'User and their CVs deleted' });
+    res.status(200).json({
+      success: true,
+      message: "User and all associated CVs deleted successfully.",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Delete User Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete user.",
+      error: error.message,
+    });
   }
 };
 
-// Admin stats
+// Dashboard Statistics
 const getStats = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalUsers = await User.countDocuments({ role: "user" });
+
+    const totalAdmins = await User.countDocuments({
+      role: "admin",
+    });
+
     const totalCVs = await CV.countDocuments();
-    const totalAdmins = await User.countDocuments({ role: 'admin' });
 
     const templateStats = await CV.aggregate([
-      { $group: { _id: '$template', count: { $sum: 1 } } }
+      {
+        $group: {
+          _id: "$template",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
     ]);
 
-    res.json({
+    res.status(200).json({
       success: true,
       stats: {
         totalUsers,
-        totalCVs,
         totalAdmins,
+        totalCVs,
         templateStats,
-      }
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Dashboard Stats Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch dashboard statistics.",
+      error: error.message,
+    });
   }
 };
 
-module.exports = { getAllUsers, getAllCVs, deleteUser, getStats };
+module.exports = {
+  getAllUsers,
+  getAllCVs,
+  deleteUser,
+  getStats,
+};
