@@ -1,5 +1,6 @@
+import axios from 'axios';
 import html2pdf from 'html2pdf.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import CVPreview from '../components/CVPreview';
@@ -15,7 +16,7 @@ import PersonalTab from '../components/builder/PersonalTab';
 import SkillsTab from '../components/builder/SkillsTab';
 
 import Toast from '../components/Toast';
-import { createCV, getCVById, incrementDownloadCount, updateCV } from '../utils/cvApi';
+import { createCV, getCVById, incrementAiUse, incrementDownloadCount, updateCV } from '../utils/cvApi';
 
 export default function CVBuilder() {
   const navigate = useNavigate();
@@ -26,6 +27,8 @@ export default function CVBuilder() {
   const [selectedTemplate, setSelectedTemplate] = useState('dark');
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
+
+  const hasTriggeredDownload = useRef(false);
 
   const [cvData, setCvData] = useState({
     title: 'My CV', 
@@ -77,6 +80,30 @@ export default function CVBuilder() {
     fetchCV();
   }, [id]);
 
+  // Handle opening specific tab passed via state from Quick Actions
+  useEffect(() => {
+    if (location.state?.openTab) {
+      setActiveTab(location.state.openTab);
+    }
+  }, [location.state]);
+
+  // Handle triggered download from Dashboard
+  useEffect(() => {
+    if (location.state?.triggerDownload && !hasTriggeredDownload.current) {
+      hasTriggeredDownload.current = true;
+
+      // Clear navigation state to prevent re-triggering on page refresh
+      navigate(location.pathname, { replace: true, state: {} });
+
+      // Small delay to ensure #cv-preview-content DOM element is fully rendered
+      const timer = setTimeout(() => {
+        handleDownloadPDF();
+      }, 600);
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.state, id]);
+
   const tabs = ['Personal', 'Education', 'Experience', 'Skills', 'ATS Audit'];
   
   const templateOptions = [
@@ -87,7 +114,6 @@ export default function CVBuilder() {
 
   const baseBtnClass = "py-[10px] px-[22px] rounded-[8px] font-['DM_Sans',sans-serif] text-[14px] font-medium cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] transform hover:scale-[1.04] active:scale-[0.96]";
 
- 
   const saveCvToBackend = async (dataToSave) => {
     try {
       if (id) {
@@ -98,8 +124,7 @@ export default function CVBuilder() {
     }
   };
 
-  // AI 
-  const incrementAiUsage = () => {
+  const incrementAiUsage = async () => {
     setCvData((prev) => {
       const updated = {
         ...prev,
@@ -108,9 +133,20 @@ export default function CVBuilder() {
       };
       
       saveCvToBackend(updated); 
-      
       return updated;
     });
+
+    if (id) {
+      try {
+        if (typeof incrementAiUse === 'function') {
+          await incrementAiUse(id);
+        } else {
+          await axios.post(`/api/cvs/${id}/ai-use`);
+        }
+      } catch (err) {
+        console.error("Failed to track AI usage on backend:", err);
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -175,8 +211,21 @@ export default function CVBuilder() {
 
       setToast({ message: 'PDF downloaded successfully!', type: 'success' });
 
-      if (id) {
-        await incrementDownloadCount(id);
+      let currentId = id;
+      if (!currentId) {
+        try {
+          const res = await createCV({ ...cvData, template: selectedTemplate });
+          if (res.data?.cv?._id) {
+            currentId = res.data.cv._id;
+            navigate(`/builder/${currentId}`, { replace: true });
+          }
+        } catch (saveErr) {
+          console.error("Auto-save prior to download failed:", saveErr);
+        }
+      }
+
+      if (currentId) {
+        await incrementDownloadCount(currentId);
       }
     } catch (err) {
       if (err.name === 'AbortError') {
@@ -188,7 +237,6 @@ export default function CVBuilder() {
     }
   };
 
-  // Safe State Update Handler 
   const handleDataChange = (update) => {
     if (typeof update === 'function') {
       setCvData((prev) => {
