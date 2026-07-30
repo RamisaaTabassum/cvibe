@@ -8,6 +8,7 @@ export default function AdminDashboard() {
   const { logout, user: currentUser } = useAuth(); 
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [stats, setStats] = useState({
@@ -20,31 +21,56 @@ export default function AdminDashboard() {
   const [cvList, setCvList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchDashboardData = async () => {
+  // Fetch Dashboard Data
+  const fetchDashboardData = async (isSyncAction = false) => {
     try {
-      setLoading(true);
-      const [statsRes, usersRes, cvsRes] = await Promise.all([
-        getAdminStats(),
-        getAdminUsers(),
-        getAdminCVs()
-      ]);
-
-      if (statsRes?.data) {
-        setStats({
-          totalUsers: statsRes.data.totalUsers || 0,
-          cvsCreated: statsRes.data.cvsCreated || 0,
-          downloads: statsRes.data.downloads || 0,
-          aiUses: statsRes.data.aiUses || 0
-        });
+      if (isSyncAction) {
+        setIsSyncing(true);
+      } else {
+        setLoading(true);
       }
 
-      if (usersRes?.data) setUsers(usersRes.data);
-      if (cvsRes?.data) setCvList(cvsRes.data);
+      const [statsRes, usersRes, cvsRes] = await Promise.all([
+        getAdminStats().catch(() => null),
+        getAdminUsers().catch(() => null),
+        getAdminCVs().catch(() => null)
+      ]);
+
+      // Safely extract users array
+      const rawUsers = usersRes?.data;
+      const extractedUsers = Array.isArray(rawUsers)
+        ? rawUsers
+        : (Array.isArray(rawUsers?.users) ? rawUsers.users : []);
+      setUsers(extractedUsers);
+
+      // Safely extract CVs array
+      const rawCVs = cvsRes?.data;
+      const extractedCVs = Array.isArray(rawCVs)
+        ? rawCVs
+        : (Array.isArray(rawCVs?.cvs) ? rawCVs.cvs : []);
+      setCvList(extractedCVs);
+
+      // Update stats with backend response or automatically calculate fallback from arrays
+      const statsData = statsRes?.data || {};
+      setStats({
+        totalUsers: statsData.totalUsers || statsData.usersCount || extractedUsers.length || 0,
+        cvsCreated: statsData.cvsCreated || statsData.totalCVs || extractedCVs.length || 0,
+        downloads: statsData.downloads || statsData.totalDownloads || 0,
+        aiUses: statsData.aiUses || statsData.totalAiUses || 0
+      });
+
+      // Show alert feedback when Force Sync finishes successfully
+      if (isSyncAction) {
+        alert("Data synced successfully!");
+      }
 
     } catch (err) {
       console.error("Error fetching admin dashboard data:", err);
+      setUsers([]);
+      setCvList([]);
     } finally {
       setLoading(false);
+      setIsSyncing(false);
     }
   };
 
@@ -52,16 +78,33 @@ export default function AdminDashboard() {
     fetchDashboardData();
   }, []);
 
+  // Optimistic Delete Function (0ms Lag Update)
   const handleDeleteUser = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await deleteAdminUser(userId);
-        setUsers(users.filter(user => user.id !== userId));
-        setStats(prev => ({ ...prev, totalUsers: prev.totalUsers - 1 }));
-      } catch (err) {
-        console.error("Error deleting user:", err);
-        alert("Failed to delete user.");
-      }
+    // Extra safeguard: Prevent self-deletion
+    if (currentUser && (currentUser._id === userId || currentUser.id === userId)) {
+      alert("You cannot delete your own admin account.");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    // 1. Backup previous state in case request fails
+    const previousUsers = [...users];
+    const previousStats = { ...stats };
+
+    // 2. Instantly update UI
+    setUsers(prev => (Array.isArray(prev) ? prev.filter(user => (user._id || user.id) !== userId) : []));
+    setStats(prev => ({ ...prev, totalUsers: Math.max(0, prev.totalUsers - 1) }));
+
+    try {
+      // 3. Send request to backend
+      await deleteAdminUser(userId);
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("Failed to delete user on server.");
+      // 4. Rollback to previous state on error
+      setUsers(previousUsers);
+      setStats(previousStats);
     }
   };
 
@@ -70,15 +113,28 @@ export default function AdminDashboard() {
     navigate('/login');
   };
 
-  const filteredUsers = users.filter(user => 
+  // Safe fallback arrays
+  const safeUsers = Array.isArray(users) ? users : [];
+  const safeCvList = Array.isArray(cvList) ? cvList : [];
+
+  const filteredUsers = safeUsers.filter(user => 
     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Helper to safely render user identification inside CV tab
+  const renderUserInfo = (userField) => {
+    if (!userField) return 'N/A';
+    if (typeof userField === 'object') {
+      return userField.name || userField.email || userField._id || 'User Object';
+    }
+    return String(userField);
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-[#f0f0f8] font-sans flex flex-col md:flex-row">
       
-      {/* ── MOBILE HEADER ── */}
+      {/* MOBILE HEADER */}
       <header className="md:hidden w-full bg-[#0d0d12] border-b border-[#1f1f2e] px-6 py-5 flex items-center justify-between sticky top-0 z-50">
         <Link to="/" className="font-['Bebas_Neue'] text-2xl tracking-[2px] text-white hover:opacity-80 transition-opacity no-underline">
           CV<span className="text-[#7c5cfc]">ibe</span>
@@ -91,7 +147,7 @@ export default function AdminDashboard() {
         </button>
       </header>
 
-      {/* ── SIDEBAR ── */}
+      {/* SIDEBAR */}
       <aside className={`
         w-64 bg-[#0d0d12] border-r border-[#1f1f2e] py-8 flex flex-col fixed top-[68px] md:top-0 bottom-0 left-0 z-40 shrink-0 transition-transform duration-300
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
@@ -138,7 +194,7 @@ export default function AdminDashboard() {
         />
       )}
 
-      {/* ── MAIN CONTENT AREA ── */}
+      {/* MAIN CONTENT AREA */}
       <main className="flex-1 p-6 sm:p-8 md:p-10 overflow-y-auto md:ml-64 w-full max-w-[1500px] mx-auto">
 
         {loading ? (
@@ -160,7 +216,6 @@ export default function AdminDashboard() {
                   {currentUser?.name ? currentUser.name.charAt(0) : 'A'}
                 </div>
 
-   
                 <span className="text-base font-semibold text-[#f0f0f8] tracking-wide hidden sm:inline">
                   {currentUser?.name || 'Admin'}
                 </span>
@@ -174,7 +229,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* ── OVERVIEW TAB ── */}
+            {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
@@ -198,7 +253,7 @@ export default function AdminDashboard() {
                     <span className="text-sm text-[#7c5cfc] font-semibold cursor-pointer hover:underline transition-all" onClick={() => setActiveTab('users')}>View all →</span>
                   </div>
                   <div className="w-full overflow-x-auto">
-                    {users.length === 0 ? (
+                    {safeUsers.length === 0 ? (
                       <div className="text-center py-12 text-base text-[#7070a0] font-medium tracking-wide">
                         No dynamic users found in database.
                       </div>
@@ -212,8 +267,8 @@ export default function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#1f1f2e]">
-                          {users.slice(0, 5).map((user, idx) => (
-                            <tr key={user.id || idx} className="hover:bg-[rgba(124,92,252,0.03)] transition-colors">
+                          {safeUsers.slice(0, 5).map((user, idx) => (
+                            <tr key={user._id || user.id || idx} className="hover:bg-[rgba(124,92,252,0.03)] transition-colors">
                               <td className="px-5 py-4.5 text-base font-semibold text-white">{user.name}</td>
                               <td className="px-5 py-4.5 text-base text-[#7070a0]">{user.email}</td>
                               <td className="px-5 py-4.5 text-base">
@@ -231,7 +286,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* ── USERS TAB ── */}
+            {/* USERS TAB */}
             {activeTab === 'users' && (
               <div className="space-y-6">
                 <div className="bg-[#0d0d12] border border-[#1f1f2e] rounded-2xl overflow-hidden">
@@ -259,7 +314,7 @@ export default function AdminDashboard() {
                         </thead>
                         <tbody className="divide-y divide-[#1f1f2e]">
                           {filteredUsers.map((user, idx) => (
-                            <tr key={user.id || idx} className="hover:bg-[rgba(124,92,252,0.03)] transition-colors">
+                            <tr key={user._id || user.id || idx} className="hover:bg-[rgba(124,92,252,0.03)] transition-colors">
                               <td className="px-6 py-4.5 text-base font-semibold text-white">{user.name}</td>
                               <td className="px-6 py-4.5 text-base text-[#7070a0]">{user.email}</td>
                               <td className="px-6 py-4.5 text-base">
@@ -268,12 +323,18 @@ export default function AdminDashboard() {
                                 }`}>{user.status || 'active'}</span>
                               </td>
                               <td className="px-6 py-4.5 text-base">
-                                <button 
-                                  className="text-sm font-semibold text-red-400/90 hover:text-red-400 transition-colors cursor-pointer flex items-center gap-1.5" 
-                                  onClick={() => handleDeleteUser(user.id)}
-                                >
-                                  🗑️ <span>Delete</span>
-                                </button>
+                                {currentUser && (currentUser._id === (user._id || user.id) || currentUser.email === user.email) ? (
+                                  <span className="text-sm font-semibold text-[#7070a0] cursor-not-allowed italic">
+                                    Current User
+                                  </span>
+                                ) : (
+                                  <button 
+                                    className="text-sm font-semibold text-red-400/90 hover:text-red-400 transition-colors cursor-pointer flex items-center gap-1.5" 
+                                    onClick={() => handleDeleteUser(user._id || user.id)}
+                                  >
+                                    🗑️ <span>Delete</span>
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -285,13 +346,13 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* ── CVS TAB ── */}
+            {/* CVS TAB */}
             {activeTab === 'cvs' && (
               <div className="space-y-6">
                 <div className="bg-[#0d0d12] border border-[#1f1f2e] rounded-2xl overflow-hidden">
-                  <div className="p-6 border-b border-[#1f1f2e] text-base font-bold text-white tracking-wide">Created CVs ({cvList.length})</div>
+                  <div className="p-6 border-b border-[#1f1f2e] text-base font-bold text-white tracking-wide">Created CVs ({safeCvList.length})</div>
                   <div className="w-full overflow-x-auto">
-                    {cvList.length === 0 ? (
+                    {safeCvList.length === 0 ? (
                       <div className="text-center py-16 text-base text-[#7070a0] font-medium">No live CVs generated yet.</div>
                     ) : (
                       <table className="w-full border-collapse min-w-[650px]">
@@ -299,15 +360,19 @@ export default function AdminDashboard() {
                           <tr>
                             <th className="px-6 py-4 text-left text-xs font-bold tracking-wider uppercase text-[#7070a0] bg-[#14141f]/40 border-b border-[#1f1f2e]">CV Title / Objective</th>
                             <th className="px-6 py-4 text-left text-xs font-bold tracking-wider uppercase text-[#7070a0] bg-[#14141f]/40 border-b border-[#1f1f2e]">Template ID</th>
-                            <th className="px-6 py-4 text-left text-xs font-bold tracking-wider uppercase text-[#7070a0] bg-[#14141f]/40 border-b border-[#1f1f2e]">User ID</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold tracking-wider uppercase text-[#7070a0] bg-[#14141f]/40 border-b border-[#1f1f2e]">User</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#1f1f2e]">
-                          {cvList.map((cv, idx) => (
-                            <tr key={cv.id || idx} className="hover:bg-[rgba(124,92,252,0.03)] transition-colors">
-                              <td className="px-6 py-4.5 text-base font-semibold text-white truncate max-w-xs">{cv.title || cv.objective || 'Untitled CV'}</td>
+                          {safeCvList.map((cv, idx) => (
+                            <tr key={cv._id || cv.id || idx} className="hover:bg-[rgba(124,92,252,0.03)] transition-colors">
+                              <td className="px-6 py-4.5 text-base font-semibold text-white truncate max-w-xs">
+                                {cv.title || cv.objective || cv.personalInfo?.fullName || 'Untitled CV'}
+                              </td>
                               <td className="px-6 py-4.5 text-base text-[#7070a0]">{cv.templateId || 'Default'}</td>
-                              <td className="px-6 py-4.5 text-base text-white font-medium">{cv.userId || cv.user_id}</td>
+                              <td className="px-6 py-4.5 text-base text-white font-medium">
+                                {renderUserInfo(cv.userId || cv.user_id || cv.user)}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -318,7 +383,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* ── SETTINGS TAB ── */}
+            {/* SETTINGS TAB */}
             {activeTab === 'settings' && (
               <div className="space-y-6">
                 <div className="bg-[#0d0d12] border border-[#1f1f2e] rounded-2xl p-6 sm:p-8 max-w-xl w-full">
@@ -326,13 +391,24 @@ export default function AdminDashboard() {
                   <div className="space-y-5">
                     <div>
                       <label className="block text-xs font-bold text-[#7070a0] mb-2 uppercase tracking-wider">Dashboard Status</label>
-                      <input className="w-full bg-[#14141f] border border-[#1f1f2e] rounded-xl px-5 py-3.5 text-base font-medium text-green-400 focus:outline-none" value="Connected to Server (MySQL)" disabled />
+                      <input className="w-full bg-[#14141f] border border-[#1f1f2e] rounded-xl px-5 py-3.5 text-base font-medium text-green-400 focus:outline-none" value="Connected to Server" disabled />
                     </div>
                     <button 
-                      onClick={fetchDashboardData}
-                      className="w-full sm:w-auto bg-[#7c5cfc] hover:bg-[#6949e2] text-white text-base font-semibold px-6 py-3.5 rounded-xl transition-colors mt-2 cursor-pointer shadow-lg shadow-[#7c5cfc]/10"
+                      onClick={() => fetchDashboardData(true)}
+                      disabled={isSyncing}
+                      className="w-full sm:w-auto bg-[#7c5cfc] hover:bg-[#6949e2] disabled:opacity-50 text-white text-base font-semibold px-6 py-3.5 rounded-xl transition-colors mt-2 cursor-pointer shadow-lg shadow-[#7c5cfc]/10 flex items-center justify-center gap-2"
                     >
-                      🔄 Force Sync Now
+                      {isSyncing ? (
+                        <>
+                          <span className="inline-block animate-spin">🔄</span>
+                          <span>Syncing Data...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>🔄</span>
+                          <span>Force Sync Now</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

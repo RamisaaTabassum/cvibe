@@ -147,15 +147,16 @@ export default function Landing() {
           </div>
           
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20, maxWidth: 1100, margin: "0 auto" }}>
-            {[
-              ["Minimal Dark","Fresh Graduate","linear-gradient(135deg,#1a1a2e,#16213e)","#7c5cfc"],
+            {[ ["Dark","Fresh Graduate","linear-gradient(135deg,#1a1e2e,#1b2637)","#141423"],
+              ["Purple","Fresh Graduate","linear-gradient(135deg,#1a1a2e,#16213e)","#7c5cfc"],
               ["Pro Green","Professional","linear-gradient(135deg,#1a2e1a,#162116)","#5cfc9a"],
-              ["Bold Red","Coach / Frequent","linear-gradient(135deg,#2e1a1a,#211616)","#fc5c7d"],
-              ["Classic Blue","Fresh Graduate","linear-gradient(135deg,#1a1e2e,#161a21)","#5c9afc"],
+              ["Bold Red","Coach / Frequent","linear-gradient(135deg,#2e1a1a,#211616)","#fc5c7d"],   
+               ["Bold ","Coach / Frequent","linear-gradient(135deg,#2e1a1a,#211616)","#7e4242"]
+
             ].filter(([,type]) => filter==="All" || type===filter).map(([name,type,bg,color]) => (
               <div 
                 key={name} 
-                onClick={handleCTA} // setModal এর জায়গায় handleCTA দিয়ে পরিবর্তন করা হয়েছে
+                onClick={handleCTA} 
                 style={{ border: "1px solid #2a2a38", borderRadius: 16, overflow: "hidden", cursor: "pointer", background: "#111118" }}
               >
                 <div style={{ height: 160, background: bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>

@@ -1,7 +1,7 @@
 import html2pdf from "html2pdf.js";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import CVPreview from "../components/CVPreview"; // Ensure this path points to your CVPreview component
+import CVPreview from "../components/CVPreview";
 import { useAuth } from "../context/AuthContext";
 import { deleteCV, getDashboard, incrementDownloadCount } from "../utils/cvApi";
 
@@ -24,6 +24,7 @@ export default function Dashboard() {
 
   const userName = user?.name || "User";
 
+  // ব্যাকএন্ড থেকে ডাটা ফেচ করার রিয়েল লজিক
   const fetchDashboardData = async () => {
     try {
       const res = await getDashboard();
@@ -31,7 +32,6 @@ export default function Dashboard() {
         const fetchedCvs = res.data.cvs || [];
         setCvs(fetchedCvs);
 
-        // Fallback calculations
         const calculatedCvsCreated = fetchedCvs.length;
 
         const calculatedBestScore = fetchedCvs.reduce((max, cv) => {
@@ -65,12 +65,11 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [location.key]);
 
-  // Handle direct download right from the Dashboard
+  // ড্যাশবোর্ড থেকে অফ-স্ক্রিন প্রিভিউ রেন্ডার করে সরাসরি PDF ডাউনলোডের লজিক
   const handleDownload = (cv) => {
     setDownloadingId(cv._id);
     setDownloadingCv(cv);
 
-    // Wait brief delay for DOM element to render off-screen
     setTimeout(async () => {
       try {
         const element = document.getElementById("hidden-cv-preview");
@@ -89,13 +88,12 @@ export default function Dashboard() {
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         };
 
-        // Render PDF directly
         await html2pdf().set(options).from(element).save();
 
-        // Increment download count in MongoDB
+        // MongoDB-তে ডাউনলোড গণনার আপডেট
         await incrementDownloadCount(cv._id);
 
-        // Refresh stats counter
+        // স্ট্যাট রিফ্রেশ
         fetchDashboardData();
       } catch (err) {
         console.error("Failed to generate PDF directly from dashboard:", err);
@@ -106,6 +104,7 @@ export default function Dashboard() {
     }, 600);
   };
 
+  // CV ডিলিট করার লজিক
   const handleDelete = async (id) => {
     setDeletingId(id);
     try {
@@ -173,6 +172,7 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* NAVBAR */}
       <nav className="dashboard-nav fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0f]/95 backdrop-blur-[16px] border-b border-[#2a2a38] py-[18px] px-6 sm:px-12 md:px-16 lg:px-24">
         <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between">
           <div
@@ -181,6 +181,7 @@ export default function Dashboard() {
           >
             CV<span className="text-[var(--accent)]">ibe</span>
           </div>
+
           <div className="flex items-center gap-[12px]">
             <button
               onClick={() => navigate("/builder")}
@@ -188,6 +189,7 @@ export default function Dashboard() {
             >
               + New CV
             </button>
+
             <div className="flex items-center gap-[12px] user-info">
               <div className="user-avatar w-[36px] h-[36px] rounded-full bg-[var(--accent)] flex items-center justify-center text-[14px] font-semibold text-white uppercase font-['DM_Sans',sans-serif]">
                 {userName[0]}
@@ -196,6 +198,7 @@ export default function Dashboard() {
                 {userName}
               </span>
             </div>
+
             <button
               onClick={handleLogout}
               className="py-2 px-3.5 border border-[#2a2a38] rounded-[8px] text-[var(--muted)] text-[13px] font-medium hover:text-[var(--text)] hover:border-[var(--text)] transition duration-200 cursor-pointer ml-1 font-['DM_Sans',sans-serif]"
@@ -206,6 +209,7 @@ export default function Dashboard() {
         </div>
       </nav>
 
+      {/* MAIN CONTENT */}
       <main className="dashboard-body pt-[110px] pb-12 px-6 sm:px-12 md:px-16 lg:px-24 w-full max-w-[1600px] mx-auto flex-grow">
         <div className="mb-10 dash-welcome">
           <h1 className="font-['Bebas_Neue',sans-serif] text-[42px] sm:text-[46px] md:text-[52px] tracking-[2px] mb-2 text-[var(--text)] uppercase leading-none">
@@ -216,6 +220,7 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* STATS OVERVIEW */}
         <div className="grid grid-cols-2 gap-4 mb-10 dash-stats lg:grid-cols-4">
           {[
             { icon: "📄", num: stats.cvsCreated, label: "CVs Created" },
@@ -241,104 +246,115 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-grid grid grid-cols-1 lg:grid-cols-[2.2fr_1fr] gap-6 items-start">
+          {/* ── MAIN YOUR CVS PANEL ── */}
           <div className="dash-panel bg-[var(--surface)] border border-[var(--border)] rounded-[16px] p-5 md:p-6 flex flex-col justify-between min-h-[380px]">
             <div>
               <div className="flex items-center justify-between mb-5 panel-hdr">
                 <h3 className="panel-title text-[15px] font-semibold text-[var(--text)] font-['DM_Sans',sans-serif]">
                   Your CVs
                 </h3>
-                <button
-                  onClick={() => navigate("/builder")}
-                  className="px-4 py-1.5 rounded-[6px] bg-[var(--accent)] text-white text-[12px] font-medium hover:opacity-90 transition font-['DM_Sans',sans-serif]"
-                >
-                  + New
-                </button>
               </div>
 
-              {cvs.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-center py-14 text-[var(--muted)]">
-                  <div className="text-[40px] mb-2 opacity-20">📄</div>
-                  <h4 className="text-[14px] font-semibold text-[#ffffff] font-['DM_Sans',sans-serif]">
-                    No CVs found
-                  </h4>
-                  <p className="text-[12px] text-[var(--muted)] max-w-xs mt-1 font-['DM_Sans',sans-serif]">
-                    Create your first document to get started.
-                  </p>
+              {/* ── FRESH GRADUATE INNER BOX ── */}
+              <div className="bg-[var(--surface2)] border border-[var(--border)] rounded-[14px] p-5 md:p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[14px] font-semibold text-[var(--text)] font-['DM_Sans',sans-serif] flex items-center gap-2">
+                    🎓 Fresh Graduate
+                  </span>
+                  <span className="text-[11px] font-medium text-[var(--accent)] bg-[var(--accent)]/10 px-2.5 py-0.5 rounded-full">
+                    Category
+                  </span>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  {cvs.map((cv) => (
-                    <div
-                      key={cv._id}
-                      className={`cv-card flex flex-col sm:flex-row sm:items-center justify-between p-[14px] bg-[var(--surface2)] rounded-[12px] border border-[var(--border)] transition-all duration-300 gap-3 sm:gap-4 ${
-                        deletingId === cv._id ? "opacity-40 scale-[0.98] pointer-events-none" : ""
-                      }`}
+
+                {cvs.length === 0 ? (
+                  /* Empty State inside Fresh Graduate Box */
+                  <div className="flex flex-col items-center justify-center text-center py-8 text-[var(--muted)]">
+                    <div className="text-[36px] mb-2 opacity-30">📄</div>
+                    <h4 className="text-[14px] font-semibold text-[var(--text)] font-['DM_Sans',sans-serif]">
+                      No CVs found
+                    </h4>
+                    <p className="text-[12px] text-[var(--muted)] max-w-xs mt-1 mb-5 font-['DM_Sans',sans-serif]">
+                      Create your first document to get started.
+                    </p>
+
+                    <button
+                      onClick={() => navigate("/builder")}
+                      className="w-full py-2.5 bg-[var(--accent)] hover:bg-[#6a4ae8] text-white rounded-[8px] text-[13px] font-medium transition cursor-pointer font-['DM_Sans',sans-serif] shadow-md shadow-[#7c5cfc]/10"
                     >
-                      <div className="cv-info flex items-center gap-[16px] min-w-0 flex-1">
-                        <div
-                          className={`cv-thumb w-10 h-[50px] rounded-[6px] flex items-center justify-center text-[18px] flex-shrink-0 ${
-                            cv.template === "purple"
-                              ? "bg-[#7c5cfc]/20"
-                              : cv.template === "red"
-                              ? "bg-[#fc5c7d]/20"
-                              : "bg-[#5cfcba]/20"
-                          }`}
-                        >
-                          📄
+                      + New CV
+                    </button>
+                  </div>
+                ) : (
+                  /* Dynamic CV List with real API functionality */
+                  <div className="space-y-3">
+                    {cvs.map((cv) => (
+                      <div
+                        key={cv._id}
+                        className={`cv-card flex flex-col sm:flex-row sm:items-center justify-between p-[12px] bg-[var(--surface)] rounded-[10px] border border-[var(--border)] transition-all duration-300 gap-3 sm:gap-4 ${
+                          deletingId === cv._id ? "opacity-40 scale-[0.98] pointer-events-none" : ""
+                        }`}
+                      >
+                        <div className="cv-info flex items-center gap-[14px] min-w-0 flex-1">
+                          <div
+                            className={`cv-thumb w-9 h-[44px] rounded-[6px] flex items-center justify-center text-[16px] flex-shrink-0 ${
+                              cv.template === "purple"
+                                ? "bg-[#7c5cfc]/20"
+                                : cv.template === "red"
+                                ? "bg-[#fc5c7d]/20"
+                                : "bg-[#5cfcba]/20"
+                            }`}
+                          >
+                            📄
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="cv-name-txt text-[13px] font-medium text-[var(--text)] mb-0.5 truncate font-['DM_Sans',sans-serif]">
+                              {cv.title || "Untitled CV"}
+                            </h4>
+                            <p className="cv-meta text-[11px] text-[var(--muted)] truncate font-['DM_Sans',sans-serif]">
+                              Last Updated:{" "}
+                              {cv.updatedAt ? new Date(cv.updatedAt).toLocaleDateString() : "N/A"}
+                            </p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <h4 className="cv-name-txt text-[14px] font-medium text-[var(--text)] mb-0.5 truncate font-['DM_Sans',sans-serif]">
-                            {cv.title || "Untitled CV"}
-                          </h4>
-                          <p className="cv-meta text-[12px] text-[var(--muted)] truncate font-['DM_Sans',sans-serif]">
-                            Last Updated:{" "}
-                            {cv.updatedAt ? new Date(cv.updatedAt).toLocaleDateString() : "N/A"}
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="cv-actions flex gap-[6px] self-end sm:self-auto">
-                        <button
-                          onClick={() => navigate(`/builder/${cv._id}`)}
-                          className="icon-btn w-8 h-8 rounded-[8px] border border-[var(--border)] bg-transparent text-[var(--muted)] flex items-center justify-center text-[14px] transition-all duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                          title="Edit"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          onClick={() => handleDownload(cv)}
-                          disabled={downloadingId === cv._id}
-                          className="icon-btn w-8 h-8 rounded-[8px] border border-[var(--border)] bg-transparent text-[var(--muted)] flex items-center justify-center text-[14px] transition-all duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50"
-                          title="Download"
-                        >
-                          {downloadingId === cv._id ? "⌛" : "⬇️"}
-                        </button>
-                        <button
-                          onClick={() => handleDelete(cv._id)}
-                          className="icon-btn w-8 h-8 rounded-[8px] border border-[var(--border)] bg-transparent text-[var(--muted)] flex items-center justify-center text-[14px] transition-all duration-200 hover:border-red-500 hover:text-red-500"
-                          title="Delete"
-                        >
-                          {deletingId === cv._id ? "⌛" : "🗑️"}
-                        </button>
+                        <div className="cv-actions flex gap-[6px] self-end sm:self-auto">
+                          <button
+                            onClick={() => navigate(`/builder/${cv._id}`)}
+                            className="icon-btn w-7 h-7 rounded-[6px] border border-[var(--border)] bg-transparent text-[var(--muted)] flex items-center justify-center text-[12px] transition-all duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                            title="Edit"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleDownload(cv)}
+                            disabled={downloadingId === cv._id}
+                            className="icon-btn w-7 h-7 rounded-[6px] border border-[var(--border)] bg-transparent text-[var(--muted)] flex items-center justify-center text-[12px] transition-all duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50"
+                            title="Download"
+                          >
+                            {downloadingId === cv._id ? "⌛" : "⬇️"}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(cv._id)}
+                            className="icon-btn w-7 h-7 rounded-[6px] border border-[var(--border)] bg-transparent text-[var(--muted)] flex items-center justify-center text-[12px] transition-all duration-200 hover:border-red-500 hover:text-red-500"
+                            title="Delete"
+                          >
+                            {deletingId === cv._id ? "⌛" : "🗑️"}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-
-            <button
-              onClick={() => navigate("/builder")}
-              className="w-full mt-6 py-3 text-center bg-transparent border border-[var(--border)] rounded-xl text-[13px] font-semibold text-[var(--text)] hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 transition cursor-pointer font-['DM_Sans',sans-serif]"
-            >
-              + Create New CV
-            </button>
           </div>
 
+          {/* QUICK ACTIONS PANEL */}
           <div className="dash-panel bg-[var(--surface)] border border-[var(--border)] rounded-[16px] p-5 md:p-6">
             <h3 className="panel-title text-[15px] font-semibold text-[var(--text)] mb-5 font-['DM_Sans',sans-serif]">
               Quick Actions
             </h3>
+
             <div className="quick-actions flex flex-col gap-[10px]">
               {[
                 {
