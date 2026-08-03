@@ -1,21 +1,17 @@
 const { GoogleGenAI, Type } = require('@google/genai');
 const CV = require('../models/CV');
-const User = require('../models/User'); // 🟢 User model import kora hoyeche
-
+const User = require('../models/User'); 
 const ai = new GoogleGenAI({ 
   apiKey: process.env.GEMINI_API_KEY
 });
 
-// 🟢 Helper function to update AI usage stats in both CV and User models
 const trackBackendAiUse = async (cvId, userId) => {
   try {
-    // 1. CV document-e aiUses count 1 barabe
     if (cvId) {
       await CV.findByIdAndUpdate(cvId, {
         $set: { aiUsed: true },$inc: { aiUses: 1 }
       });
     }
-    // 2. User document-eo aiUses count 1 barabe
     if (userId) {
       await User.findByIdAndUpdate(userId, {
         $inc: { aiUses: 1 }
@@ -33,7 +29,6 @@ const extractKeywords = async (req, res) => {
       return res.status(400).json({ message: 'Job description is required' });
     }
 
-    // GoogleGenAI SDK-er dynamic structure configuration matching responseSchema runtime setup
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',  
       contents: `Extract the most important technical and soft keywords from this job description for a CV/resume. Job Description: ${jobDescription}`,
@@ -56,7 +51,6 @@ const extractKeywords = async (req, res) => {
 
     const keywords = JSON.parse(rawText);
 
-    // 🟢 Automatically increment AI usage counter for both CV and User
     await trackBackendAiUse(cvId, req.user?.id || req.user?._id);
 
     return res.json({ success: true, keywords });
@@ -81,7 +75,6 @@ const fixGrammar = async (req, res) => {
 
     const improved = response.text ? response.text.trim() : text;
 
-    // 🟢 Automatically increment AI usage counter for both CV and User
     await trackBackendAiUse(cvId, req.user?.id || req.user?._id);
 
     return res.json({ success: true, improved });
