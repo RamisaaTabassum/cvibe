@@ -2,14 +2,26 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const seedAdmin = require('./utils/seedAdmin'); // 1. Imported seedAdmin
 const authRoutes = require('./routes/authRoutes');
 const cvRoutes = require('./routes/cvRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-connectDB();
+// 2. Initialize Database Connection and Seed Admin
+const startServer = async () => {
+  try {
+    await connectDB();
+    await seedAdmin();
+  } catch (error) {
+    console.error('Initialization error:', error.message);
+  }
+};
+
+startServer();
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -28,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cv', cvRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

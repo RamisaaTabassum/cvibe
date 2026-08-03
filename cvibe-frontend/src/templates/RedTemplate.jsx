@@ -14,7 +14,7 @@ const RedTemplate = ({ data }) => {
   const linkedinUrl = personalInfo?.linkedin || personalInfo?.linkedIn || personalInfo?.portfolio || '';
 
   return (
-    <div className="w-full min-h-[297mm] bg-white text-gray-800 font-sans flex flex-col overflow-hidden rounded-xl">
+    <div className="w-full min-h-[297mm] bg-white text-black font-sans flex flex-col overflow-hidden rounded-xl">
       
       {/* Header Section */}
       <div className="bg-[#241616] text-white p-8 md:p-10 flex flex-col justify-center">
@@ -38,74 +38,74 @@ const RedTemplate = ({ data }) => {
         
         {/* Summary Section */}
         <div>
-          <div className="border-b border-gray-200 pb-1.5 mb-2.5">
-            <h2 className="text-xs font-bold tracking-widest text-[#b91c1c] uppercase">
+          <div className="border-b border-black pb-1.5 mb-2.5">
+            <h2 className="text-xs font-bold tracking-widest text-black uppercase">
               Summary
             </h2>
           </div>
           {summary ? (
-            <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">{summary}</p>
+            <p className="text-sm leading-relaxed text-black whitespace-pre-line">{summary}</p>
           ) : (
-            <p className="text-sm italic text-gray-400">Your summary will appear here...</p>
+            <p className="text-sm italic text-black opacity-60">Your summary will appear here...</p>
           )}
         </div>
 
         {/* Education Section */}
         <div>
-          <div className="border-b border-gray-200 pb-1.5 mb-2.5">
-            <h2 className="text-xs font-bold tracking-widest text-[#b91c1c] uppercase">
+          <div className="border-b border-black pb-1.5 mb-2.5">
+            <h2 className="text-xs font-bold tracking-widest text-black uppercase">
               Education
             </h2>
           </div>
           {education?.length > 0 && (education[0]?.degree || education[0]?.institution) ? (
             <div className="space-y-4">
               {education.map((edu, i) => (
-                <div key={i} className="text-sm">
-                  <div className="flex items-baseline justify-between font-semibold text-gray-700">
+                <div key={i} className="text-sm text-black">
+                  <div className="flex items-baseline justify-between font-semibold">
                     <p>{edu.degree || 'Degree'}</p>
                     {(edu.startYear || edu.endYear) && (
-                      <span className="text-xs font-normal text-gray-400">
+                      <span className="text-xs font-normal">
                         {edu.startYear} {edu.endYear ? ` - ${edu.endYear}` : ''}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 italic mt-0.5">{edu.institution || 'Institution'}</p>
+                  <p className="text-xs italic mt-0.5">{edu.institution || 'Institution'}</p>
                   {(edu.cgpa || edu.CGPA) && (
-                    <p className="mt-1 text-xs font-medium text-gray-600">CGPA: {edu.cgpa || edu.CGPA}</p>
+                    <p className="mt-1 text-xs font-medium">CGPA: {edu.cgpa || edu.CGPA}</p>
                   )}
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-sm">
-              <p className="font-medium text-gray-400">Degree / Program</p>
-              <p className="text-xs text-gray-400 italic mt-0.5">Institution Name</p>
+            <div className="text-sm text-black opacity-60">
+              <p className="font-medium">Degree / Program</p>
+              <p className="text-xs italic mt-0.5">Institution Name</p>
             </div>
           )}
         </div>
 
         {/* Experience Section */}
         <div>
-          <div className="border-b border-gray-200 pb-1.5 mb-2.5">
-            <h2 className="text-xs font-bold tracking-widest text-[#b91c1c] uppercase">
+          <div className="border-b border-black pb-1.5 mb-2.5">
+            <h2 className="text-xs font-bold tracking-widest text-black uppercase">
               Experience
             </h2>
           </div>
           {experience?.length > 0 && (experience[0]?.jobTitle || experience[0]?.position || experience[0]?.company) ? (
             <div className="space-y-4">
               {experience.map((exp, i) => (
-                <div key={i} className="text-sm">
-                  <div className="flex items-baseline justify-between font-semibold text-gray-700">
+                <div key={i} className="text-sm text-black">
+                  <div className="flex items-baseline justify-between font-semibold">
                     <p>{exp.jobTitle || exp.position || 'Job Title'}</p>
                     {(exp.startDate || exp.duration) && (
-                      <span className="text-xs font-normal text-gray-400">
+                      <span className="text-xs font-normal">
                         {exp.startDate || exp.duration}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 italic mt-0.5">{exp.company || 'Company'}</p>
+                  <p className="text-xs italic mt-0.5">{exp.company || 'Company'}</p>
                   {exp.description && (
-                    <p className="mt-1.5 text-xs leading-relaxed text-gray-600 whitespace-pre-line">
+                    <p className="mt-1.5 text-xs leading-relaxed whitespace-pre-line">
                       {exp.description}
                     </p>
                   )}
@@ -113,52 +113,53 @@ const RedTemplate = ({ data }) => {
               ))}
             </div>
           ) : (
-            <div className="text-sm">
-              <p className="font-medium text-gray-400">Job Title / Position</p>
-              <p className="text-xs text-gray-400 italic mt-0.5">Company Name</p>
+            <div className="text-sm text-black opacity-60">
+              <p className="font-medium">Job Title / Position</p>
+              <p className="text-xs italic mt-0.5">Company Name</p>
             </div>
           )}
         </div>
 
         {/* Skills & Languages Section */}
         <div>
-          <div className="border-b border-gray-200 pb-1.5 mb-2.5">
-            <h2 className="text-xs font-bold tracking-widest text-[#b91c1c] uppercase">
+          <div className="border-b border-black pb-1.5 mb-2.5">
+            <h2 className="text-xs font-bold tracking-widest text-black uppercase">
               Skills & Languages
             </h2>
           </div>
           {(technicalSkills || softSkills || languages || skills?.length > 0) ? (
-            <div className="space-y-2 text-sm leading-relaxed">
+            <div className="space-y-2 text-sm leading-relaxed text-black">
               {technicalSkills && (
-                <p className="text-gray-600"><strong className="font-medium text-gray-700">Technical Skills:</strong> {technicalSkills}</p>
+                <p><strong className="font-semibold">Technical Skills:</strong> {technicalSkills}</p>
               )}
               {softSkills && (
-                <p className="text-gray-600"><strong className="font-medium text-gray-700">Soft Skills:</strong> {softSkills}</p>
+                <p><strong className="font-semibold">Soft Skills:</strong> {softSkills}</p>
               )}
               {languages && (
-                <p className="text-gray-600"><strong className="font-medium text-gray-700">Languages:</strong> {languages}</p>
+                <p><strong className="font-semibold">Languages:</strong> {languages}</p>
               )}
               {!technicalSkills && !softSkills && !languages && skills && (
-                <p className="text-gray-600">{Array.isArray(skills) ? skills.join(", ") : skills}</p>
+                <p>{Array.isArray(skills) ? skills.join(", ") : skills}</p>
               )}
             </div>
           ) : (
-            <p className="text-sm italic text-gray-400">Skills will appear here...</p>
+            <p className="text-sm italic text-black opacity-60">Skills will appear here...</p>
           )}
         </div>
 
+        {/* Certifications Section */}
         <div>
-          <div className="border-b border-gray-200 pb-1.5 mb-2.5">
-            <h2 className="text-xs font-bold tracking-widest text-[#b91c1c] uppercase">
+          <div className="border-b border-black pb-1.5 mb-2.5">
+            <h2 className="text-xs font-bold tracking-widest text-black uppercase">
               Certifications
             </h2>
           </div>
           {certifications && certifications.trim().length > 0 ? (
-            <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">
+            <p className="text-sm leading-relaxed text-black whitespace-pre-line">
               {certifications}
             </p>
           ) : (
-            <p className="text-sm italic text-gray-400">Certifications will appear here...</p>
+            <p className="text-sm italic text-black opacity-60">Certifications will appear here...</p>
           )}
         </div>
 

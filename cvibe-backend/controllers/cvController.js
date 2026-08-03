@@ -1,5 +1,4 @@
-const CV = require('../models/CV');
-
+const CV = require('../models/Cv');
 
 const createCV = async (req, res) => {
   try {
@@ -12,7 +11,6 @@ const createCV = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const getMyCVs = async (req, res) => {
   try {
@@ -40,7 +38,6 @@ const getCVById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const updateCV = async (req, res) => {
   try {
@@ -85,4 +82,66 @@ const deleteCV = async (req, res) => {
   }
 };
 
-module.exports = { createCV, getMyCVs, getCVById, updateCV, deleteCV };
+// Increments download tracking field in MongoDB
+const incrementDownload = async (req, res) => {
+  try {
+    const cv = await CV.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { downloadCount: 1 } },
+      { new: true }
+    );
+
+    if (!cv) {
+      return res.status(404).json({ message: 'CV not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Download count updated',
+      downloadCount: cv.downloadCount || 0,
+      cv,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Increments AI usage stats and sets aiUsed flag in MongoDB
+const incrementAiUse = async (req, res) => {
+  try {
+    const cv = await CV.findByIdAndUpdate(
+      req.params.id,
+      {
+        $inc: { aiUses: 1 },
+        $set: { aiUsed: true },
+      },
+      { new: true }
+    );
+
+    if (!cv) {
+      return res.status(404).json({ message: 'CV not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'AI usage count updated',
+      aiUses: cv.aiUses || 0,
+      aiUsed: true,
+      cv,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createCV,
+  getMyCVs,
+  getCVById,
+  updateCV,
+  deleteCV,
+  incrementDownload,
+  trackDownload: incrementDownload,
+  incrementAiUse,
+  trackAiUse: incrementAiUse,
+};

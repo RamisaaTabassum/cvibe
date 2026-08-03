@@ -6,8 +6,22 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
       onChange({
         ...data,
         personalInfo: {
-          ...data.personalInfo,
+          ...data?.personalInfo,
           [field]: value
+        }
+      });
+    }
+  };
+
+  const handleApplyAiSummary = (generatedSummary) => {
+    if (onChange) {
+      onChange({
+        ...data,
+        aiUsed: true,
+        aiUses: (data?.aiUses || 0) + 1,
+        personalInfo: {
+          ...(data?.personalInfo || {}),
+          summary: generatedSummary
         }
       });
     }
@@ -98,7 +112,7 @@ const PersonalTab = ({ cvData: data, setCvData: onChange }) => {
         
         <GrammarFixer
           text={data?.personalInfo?.summary}
-          onApply={(improved) => handleChange('summary', improved)}
+          onApply={handleApplyAiSummary}
         />
       </div>
     </div>
