@@ -3,12 +3,12 @@ describe('E2E Testing: Complete CV Creation Flow', () => {
     // Login and navigate to the dashboard
     cy.visit('http://localhost:5173/login');
     cy.contains('User').click();
-    cy.get('input[type="email"]').type('ramisatabassum8888@gmail.com');
+    cy.get('input[type="email"]').type('ramisatabassum84381@gmail.com');
     cy.get('input[type="password"]').type('123456');
     cy.contains('button', 'Login').click();
   });
 
-  it('should create a complete CV by filling all tabs and running an ATS Audit', () => {
+  it('should create a complete CV by filling all tabs, running ATS Audit, downloading PDF, and logging out', () => {
     // Navigate to the CV Builder page
     cy.contains('+ New CV').click();
 
@@ -37,19 +37,23 @@ describe('E2E Testing: Complete CV Creation Flow', () => {
 
     // --- 4. SKILLS TAB ---
     cy.contains('Skills').click();
-    // Typing a skill and pressing Enter to add the tag
     cy.get('input[placeholder="Type a skill and press Enter"]').type('React{enter}');
     cy.get('input[placeholder="Type a skill and press Enter"]').type('Cypress{enter}');
 
     // --- 5. ATS AUDIT TAB ---
     cy.contains('ATS Audit').click();
-    // Click the AI Scan button
     cy.contains('Scan CV Authenticity & Rules').click();
-    // Wait a bit for the AI scan to process (optional but good for visual testing)
     cy.wait(2000); 
 
     // --- 6. SAVE CV ---
-    // Click the Save CV button on the top right
     cy.contains('button', 'Save CV').click();
+
+    // --- 7. DOWNLOAD PDF & LOGOUT ---
+    cy.contains('button', 'Download PDF').click();
+    cy.contains('Dashboard').click();
+    cy.contains('Logout').click();
+    
+    // Verify redirection back to the login page
+    cy.url().should('include', '/login');
   });
 });
