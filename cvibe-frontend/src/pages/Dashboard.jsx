@@ -24,7 +24,6 @@ export default function Dashboard() {
 
   const userName = user?.name || "User";
 
-  // ব্যাকএন্ড থেকে ডাটা ফেচ করার রিয়েল লজিক
   const fetchDashboardData = async () => {
     try {
       const res = await getDashboard();
@@ -65,7 +64,6 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [location.key]);
 
-  // ড্যাশবোর্ড থেকে অফ-স্ক্রিন প্রিভিউ রেন্ডার করে সরাসরি PDF ডাউনলোডের লজিক
   const handleDownload = (cv) => {
     setDownloadingId(cv._id);
     setDownloadingCv(cv);
@@ -90,10 +88,8 @@ export default function Dashboard() {
 
         await html2pdf().set(options).from(element).save();
 
-        // MongoDB-তে ডাউনলোড গণনার আপডেট
         await incrementDownloadCount(cv._id);
 
-        // স্ট্যাট রিফ্রেশ
         fetchDashboardData();
       } catch (err) {
         console.error("Failed to generate PDF directly from dashboard:", err);
@@ -104,7 +100,6 @@ export default function Dashboard() {
     }, 600);
   };
 
-  // CV ডিলিট করার লজিক
   const handleDelete = async (id) => {
     setDeletingId(id);
     try {
