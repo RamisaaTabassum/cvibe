@@ -77,4 +77,4 @@ const GrammarFixer = ({ text, onApply }) => {
   );
 };
 
-export default GrammarFixer;
+export default GrammarFixer ;

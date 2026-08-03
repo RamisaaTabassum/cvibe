@@ -1,7 +1,9 @@
 const { GoogleGenAI, Type } = require('@google/genai');
+
 const CV = require('../models/CV');
-const User = require('../models/User'); 
-const ai = new GoogleGenAI({ 
+const User = require('../models/User');
+
+const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 });
 
