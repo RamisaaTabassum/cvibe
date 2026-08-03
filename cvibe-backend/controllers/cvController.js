@@ -1,4 +1,4 @@
-const CV = require('../models/Cv');
+const CV = require('../models/CV');
 
 const createCV = async (req, res) => {
   try {

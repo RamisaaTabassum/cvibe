@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const CV = require("../models/Cv");
+const CV = require("../models/CV");
 
 // Get All Users
 const getAllUsers = async (req, res) => {
