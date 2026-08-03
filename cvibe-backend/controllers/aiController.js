@@ -1,5 +1,5 @@
 const { GoogleGenAI, Type } = require('@google/genai');
-const CV = require('../models/CV');
+const CV = require('../models/cv');
 const User = require('../models/User'); // 🟢 User model import kora hoyeche
 
 const ai = new GoogleGenAI({ 
