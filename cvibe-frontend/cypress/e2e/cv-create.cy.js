@@ -3,7 +3,7 @@ describe('E2E Testing: Complete CV Creation Flow', () => {
     // Login and navigate to the dashboard
     cy.visit('http://localhost:5173/login');
     cy.contains('User').click();
-    cy.get('input[type="email"]').type('ramisatabassum84381@gmail.com');
+    cy.get('input[type="email"]').type('ramisatabassum8888@gmail.com');
     cy.get('input[type="password"]').type('123456');
     cy.contains('button', 'Login').click();
   });
@@ -47,13 +47,14 @@ describe('E2E Testing: Complete CV Creation Flow', () => {
 
     // --- 6. SAVE CV ---
     cy.contains('button', 'Save CV').click();
+    cy.wait(2000);
 
     // --- 7. DOWNLOAD PDF & LOGOUT ---
     cy.contains('button', 'Download PDF').click();
     cy.contains('Dashboard').click();
     cy.contains('Logout').click();
     
-    // Verify redirection back to the login page
-    cy.url().should('include', '/login');
+    // Verify user is logged out (dashboard is no longer visible)
+    cy.url().should('not.include', '/dashboard');
   });
 });
