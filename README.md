@@ -6,8 +6,8 @@ CVibe is an automated, AI-enhanced web application designed to help users struct
 
 ## Project Links
 
-- **Live Demo:** [Insert Your Vercel/Netlify Link Here]
-- **Figma UI Design:** [Insert Your Figma Link Here]
+- **Live Demo:** https://cvibe-frontend.vercel.app/
+- **Figma UI Design:** https://www.figma.com/proto/0kPQLmJf2tbdbhwz3um6jL/project?node-id=0-1&t=uGei2dOC6KTPddwA-1
 
 ---
 
